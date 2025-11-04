@@ -1,5 +1,7 @@
 import { type Statement } from '../types/statement.type.ts';
 
+type SortKey = 'createdAt' | 'priority';
+
 export class Sorter {
     private readonly data: Statement[];
 
@@ -18,7 +20,24 @@ export class Sorter {
         return { sortedArray, time: end - start, comparisons: ops.comparisons, complexity };
     }
 
-    heapSort() {
+    private compare(a: Statement, b: Statement, key: SortKey, ops: { comparisons: number }) {
+        ops.comparisons++;
+
+        if (key === 'createdAt') {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateA - dateB;
+        }
+
+        if (key === 'priority') {
+            const order = ['низький', 'середній', 'високий'];
+            return order.indexOf(a.priority) - order.indexOf(b.priority);
+        }
+
+        return 0;
+    }
+
+    heapSort(key: SortKey) {
         return this.measureTime((ops) => {
             const a = [...this.data];
 
@@ -27,10 +46,8 @@ export class Sorter {
                 const l = 2 * i + 1;
                 const r = 2 * i + 2;
 
-                ops.comparisons++;
-                if (l < n && arr[l].duration > arr[largest].duration) largest = l;
-                ops.comparisons++;
-                if (r < n && arr[r].duration > arr[largest].duration) largest = r;
+                if (l < n && this.compare(arr[l], arr[largest], key, ops) > 0) largest = l;
+                if (r < n && this.compare(arr[r], arr[largest], key, ops) > 0) largest = r;
 
                 if (largest !== i) {
                     [arr[i], arr[largest]] = [arr[largest], arr[i]];
@@ -48,22 +65,21 @@ export class Sorter {
         }, 'O(n log n)');
     }
 
-    bubbleSort() {
+    bubbleSort(key: SortKey) {
         return this.measureTime((ops) => {
             const a = [...this.data];
             for (let i = 0; i < a.length - 1; i++) {
                 for (let j = 0; j < a.length - 1 - i; j++) {
-                    ops.comparisons++;
-                    if (a[j].duration > a[j + 1].duration) {
+                    if (this.compare(a[j], a[j + 1], key, ops) > 0) {
                         [a[j], a[j + 1]] = [a[j + 1], a[j]];
                     }
                 }
             }
             return a;
-        }, 'O(n^2)');
+        }, 'O(n²)');
     }
 
-    quickSort() {
+    quickSort(key: SortKey) {
         return this.measureTime((ops) => {
             const quick = (arr: Statement[]): Statement[] => {
                 if (arr.length <= 1) return arr;
@@ -73,27 +89,26 @@ export class Sorter {
                 const middle: Statement[] = [];
 
                 for (const x of arr) {
-                    ops.comparisons++;
-                    if (x.duration < pivot.duration) left.push(x);
-                    else if (x.duration > pivot.duration) right.push(x);
+                    const cmp = this.compare(x, pivot, key, ops);
+                    if (cmp < 0) left.push(x);
+                    else if (cmp > 0) right.push(x);
                     else middle.push(x);
                 }
 
                 return [...quick(left), ...middle, ...quick(right)];
             };
             return quick(this.data);
-        }, 'O(n log n) average');
+        }, 'O(n log n)');
     }
 
-    mergeSort() {
+    mergeSort(key: SortKey) {
         return this.measureTime((ops) => {
             const merge = (left: Statement[], right: Statement[]): Statement[] => {
                 const result: Statement[] = [];
                 let i = 0,
                     j = 0;
                 while (i < left.length && j < right.length) {
-                    ops.comparisons++;
-                    if (left[i].duration <= right[j].duration) result.push(left[i++]);
+                    if (this.compare(left[i], right[j], key, ops) <= 0) result.push(left[i++]);
                     else result.push(right[j++]);
                 }
                 return [...result, ...left.slice(i), ...right.slice(j)];
@@ -111,33 +126,30 @@ export class Sorter {
         }, 'O(n log n)');
     }
 
-    insertionSort() {
+    insertionSort(key: SortKey) {
         return this.measureTime((ops) => {
             const a = [...this.data];
             for (let i = 1; i < a.length; i++) {
-                const key = a[i];
+                const keyItem = a[i];
                 let j = i - 1;
-                while (j >= 0) {
-                    ops.comparisons++;
-                    if (a[j].duration <= key.duration) break;
+                while (j >= 0 && this.compare(a[j], keyItem, key, ops) > 0) {
                     a[j + 1] = a[j];
                     j--;
                 }
-                a[j + 1] = key;
+                a[j + 1] = keyItem;
             }
             return a;
-        }, 'O(n^2)');
+        }, 'O(n²)');
     }
 
-    selectionSort() {
+    selectionSort(key: SortKey) {
         return this.measureTime((ops) => {
             const a = [...this.data];
             const n = a.length;
             for (let i = 0; i < n - 1; i++) {
                 let minIndex = i;
                 for (let j = i + 1; j < n; j++) {
-                    ops.comparisons++;
-                    if (a[j].duration < a[minIndex].duration) {
+                    if (this.compare(a[j], a[minIndex], key, ops) < 0) {
                         minIndex = j;
                     }
                 }
@@ -146,6 +158,6 @@ export class Sorter {
                 }
             }
             return a;
-        }, 'O(n^2)');
+        }, 'O(n²)');
     }
 }

@@ -4,16 +4,13 @@ export type Statement = {
     type: string;
     priority: 'високий' | 'середній' | 'низький';
     createdAt: string;
-    duration: number;
     client: string;
 };
 
 export type Response = {
-    first: number;
-    prev: number;
-    next: number;
-    last: number;
-    pages: number;
-    items: number;
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
     data: Statement[];
 };
