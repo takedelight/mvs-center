@@ -11,10 +11,19 @@ import { Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { Response } from '@/types/statement.type.ts';
+import type { Response, Statement } from '@/types/statement.type.ts';
+import { Sorter } from '@/lib/sorter.ts';
+
+type SortedData = {
+    sortedArray: Statement[];
+    time: number;
+    comparisons: number;
+    complexity: string;
+};
 
 export const StatementTable = () => {
     const [page, setPage] = useState(1);
+    const [sortedArray, setSortedArray] = useState<null | SortedData>(null);
 
     const { data, isLoading, isError } = useQuery<Response>({
         queryKey: ['data', page],
@@ -26,14 +35,66 @@ export const StatementTable = () => {
         staleTime: 0,
     });
 
+    const tableData = sortedArray?.sortedArray ?? data?.data ?? [];
+
     const buttons = useMemo(() => {
         if (!data) return [];
         return Array.from({ length: data.pages }, (_, i) => i + 1);
-    }, [data?.pages]);
+    }, [data]);
 
-    console.log(buttons);
+    const sorter = useMemo(() => new Sorter(data?.data ?? []), [data]);
+
+    const handleSort = (method: keyof Sorter) => {
+        const result = sorter[method]();
+        setSortedArray(result);
+    };
+
+    // Скидання сортування при зміні сторінки
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        setSortedArray(null);
+    };
+
     return (
         <>
+            <div>
+                <span>Поле за яким сортується:</span>
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+
+            <ul className="flex mb-4 justify-center items-center gap-2 ">
+                <li>
+                    <Button onClick={() => handleSort('heapSort')}>Сортування купою</Button>
+                </li>
+                <li>
+                    <Button onClick={() => handleSort('bubbleSort')}>Сортування бульбашкою</Button>
+                </li>
+                <li>
+                    <Button onClick={() => handleSort('quickSort')}>Швидке сортування</Button>
+                </li>
+                <li>
+                    <Button onClick={() => handleSort('mergeSort')}>Сортування злиттям</Button>
+                </li>
+                <li>
+                    <Button onClick={() => handleSort('insertionSort')}>
+                        Сортування вставками
+                    </Button>
+                </li>
+                <li>
+                    <Button onClick={() => handleSort('selectionSort')}>Сортування вибором</Button>
+                </li>
+            </ul>
+
+            {sortedArray && (
+                <div className="mb-4 text-sm text-muted-foreground text-center">
+                    <p>Час сортування: {sortedArray.time} ms</p>
+                    <p>Порівнянь: {sortedArray.comparisons}</p>
+                    <p>Складність: {sortedArray.complexity}</p>
+                </div>
+            )}
+
             <Table className="border border-border divide-y divide-border">
                 <TableHeader>
                     <TableRow>
@@ -74,7 +135,7 @@ export const StatementTable = () => {
                         </TableRow>
                     )}
 
-                    {data?.data.map((item) => (
+                    {tableData.map((item) => (
                         <TableRow key={item.id}>
                             <TableCell className="font-medium">{item.name}</TableCell>
                             <TableCell>{item.type}</TableCell>
@@ -92,33 +153,13 @@ export const StatementTable = () => {
                     <TableRow>
                         <TableCell colSpan={6}>
                             <div className="flex justify-between items-center">
-                                {/*<div className="flex gap-2">*/}
-                                {/*    <Button*/}
-                                {/*        variant="outline"*/}
-                                {/*        disabled={page === 1}*/}
-                                {/*        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}*/}
-                                {/*    >*/}
-                                {/*        <ChevronLeft />*/}
-                                {/*    </Button>*/}
-
-                                {/*    <Button*/}
-                                {/*        variant="outline"*/}
-                                {/*        disabled={!data || page >= data.pages}*/}
-                                {/*        onClick={() =>*/}
-                                {/*            setPage((prev) => Math.min(prev + 1, data.pages))*/}
-                                {/*        }*/}
-                                {/*    >*/}
-                                {/*        <ChevronRight />*/}
-                                {/*    </Button>*/}
-                                {/*</div>*/}
-
-                                <ul className="flex gap-1 items-center">
+                                <ul className="flex gap-1 items-center flex-wrap">
                                     {buttons.map((button) => (
                                         <li key={button}>
                                             <Button
                                                 variant="outline"
                                                 disabled={page === button}
-                                                onClick={() => setPage(button)}
+                                                onClick={() => handlePageChange(button)}
                                             >
                                                 {button}
                                             </Button>

@@ -128,4 +128,24 @@ export class Sorter {
             return a;
         }, 'O(n^2)');
     }
+
+    selectionSort() {
+        return this.measureTime((ops) => {
+            const a = [...this.data];
+            const n = a.length;
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+                for (let j = i + 1; j < n; j++) {
+                    ops.comparisons++;
+                    if (a[j].duration < a[minIndex].duration) {
+                        minIndex = j;
+                    }
+                }
+                if (minIndex !== i) {
+                    [a[i], a[minIndex]] = [a[minIndex], a[i]];
+                }
+            }
+            return a;
+        }, 'O(n^2)');
+    }
 }
