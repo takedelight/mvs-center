@@ -12,12 +12,17 @@ export class Sorter {
     private measureTime(
         fn: (ops: { comparisons: number }) => Statement[],
         complexity: string,
-    ): { sortedArray: Statement[]; time: number; comparisons: number; complexity: string } {
+    ): { sortedArray: Statement[]; time: string; comparisons: number; complexity: string } {
         const ops = { comparisons: 0 };
         const start = performance.now();
         const sortedArray = fn(ops);
         const end = performance.now();
-        return { sortedArray, time: end - start, comparisons: ops.comparisons, complexity };
+        return {
+            sortedArray,
+            time: `${(end - start).toFixed(3)}ms`,
+            comparisons: ops.comparisons,
+            complexity,
+        };
     }
 
     private compare(a: Statement, b: Statement, key: SortKey, ops: { comparisons: number }) {

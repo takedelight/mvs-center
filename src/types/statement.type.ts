@@ -1,16 +1,15 @@
+export type Priority = 'Високий' | 'Середній' | 'Низький';
+
 export type Statement = {
     id: number;
     name: string;
     type: string;
-    priority: 'високий' | 'середній' | 'низький';
+    priority: Priority;
     createdAt: string;
     client: string;
 };
 
-export type Response = {
-    page: number;
-    perPage: number;
+export type ApiResponse = {
     total: number;
-    totalPages: number;
     data: Statement[];
 };
