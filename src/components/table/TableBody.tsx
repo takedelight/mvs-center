@@ -1,9 +1,10 @@
-import { Inbox, RotateCw } from 'lucide-react';
-import { Button } from '../ui/button';
+import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { Loader } from '../ui/loader';
 import { TableCell, TableRow, TableBody as TBody } from '../ui/table';
-import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import type { ApiResponse, Statement } from '@/types/statement.type';
+import type { ApiResponse } from '@/types/api.type';
+import { Button } from '../ui/button';
+import { Inbox, RotateCw } from 'lucide-react';
+import type { Statement } from '@/types/statement.type';
 
 type Props = {
     isLoading: boolean;
@@ -11,10 +12,10 @@ type Props = {
     refetch: (
         options?: RefetchOptions | undefined,
     ) => Promise<QueryObserverResult<ApiResponse, Error>>;
-    data: Statement[];
+    statements: Statement[] | null;
 };
 
-export const TableBody = ({ isError, isLoading, refetch, data }: Props) => {
+export const TableBody = ({ isError, isLoading, refetch, statements }: Props) => {
     return (
         <TBody>
             {isLoading && (
@@ -44,7 +45,7 @@ export const TableBody = ({ isError, isLoading, refetch, data }: Props) => {
                 </TableRow>
             )}
 
-            {!isLoading && data?.length === 0 && (
+            {!isLoading && statements?.length === 0 && (
                 <TableRow>
                     <TableCell colSpan={6}>
                         <div className="flex items-center justify-center flex-col py-10 text-muted-foreground">
@@ -55,12 +56,13 @@ export const TableBody = ({ isError, isLoading, refetch, data }: Props) => {
                 </TableRow>
             )}
 
-            {data.map((item) => (
+            {statements?.map((item) => (
                 <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell className="text-center">{item.type}</TableCell>
                     <TableCell>{item.client}</TableCell>
-                    <TableCell>{item.priority}</TableCell>
+                    <TableCell>{item.priority === 1 ? 'Високий' : 'Низький'}</TableCell>
+                    <TableCell>{item.status === true ? 'У процесі' : 'Виконано  '}</TableCell>
                     <TableCell className="text-center">
                         {new Date(item.createdAt).toLocaleDateString('uk-UA')}
                     </TableCell>

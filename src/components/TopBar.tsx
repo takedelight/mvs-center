@@ -1,57 +1,92 @@
-import { Button } from '@/components/ui/button.tsx';
-import { type Dispatch, type SetStateAction } from 'react';
-import type { SortedValue } from '@/types/sorted.type.ts';
-import type { Sorter } from '@/lib/sorter';
-import type { SortedData } from './StatementTable';
-import type { ChartData } from '@/types/chart-data.type';
-import { LimitList } from './LimitList';
-import { PriorityList } from './PriorityList';
+import { LIMIT } from '@/constants/statements';
+import { Button } from './ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from './ui/dropdown-menu';
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import type { SelectedMethod } from '@/types/selected-method.type';
+import { SORTED_BY, type SortedBy } from '@/constants/sorted';
+
+const algs = [
+    { alias: 'Сортування купою', value: 'heapSort' },
+    { alias: 'Сортування вставками', value: 'insertionSort' },
+    { alias: 'Сортування бульбашкою', value: 'bubbleSort' },
+    { alias: 'Сортування злиттям', value: 'mergeSort' },
+    { alias: 'Швидке сортування ', value: 'quickSort' },
+];
 
 type Props = {
+    selectedMethod: SelectedMethod;
+    setSelectedMethod: Dispatch<SetStateAction<SelectedMethod>>;
     limit: number;
     setLimit: Dispatch<SetStateAction<number>>;
-    sortField: SortedValue;
-    setSortedArray: Dispatch<SetStateAction<SortedData | null>>;
-    setSortField: Dispatch<SetStateAction<SortedValue>>;
-    setChartsData: Dispatch<SetStateAction<ChartData[]>>;
-    sorter: Sorter;
+    sortedBy: SortedBy;
+    setSortedBy: Dispatch<SetStateAction<SortedBy>>;
 };
-
 export const TopBar = ({
+    selectedMethod,
+    setSelectedMethod,
     limit,
     setLimit,
-    sortField,
-    setSortField,
-    sorter,
-    setChartsData,
+    setSortedBy,
+    sortedBy,
 }: Props) => {
-    const handleSort = () => {
-        const algorithms = [
-            { alias: 'Сортування купою', fn: sorter.heapSort },
-            { alias: 'Сортування бульбашкою', fn: sorter.bubbleSort },
-            { alias: 'Швидке сортування', fn: sorter.quickSort },
-            { alias: 'Сортування злиттям', fn: sorter.mergeSort },
-            { alias: 'Сортування вставками', fn: sorter.insertionSort },
-            { alias: 'Сортування вибором', fn: sorter.selectionSort },
-        ];
-
-        const results = algorithms.map(({ alias, fn }) => {
-            const { time, comparisons } = fn(sortField);
-            return { alias, time, comparision: comparisons };
-        });
-
-        setChartsData(results);
-    };
+    const [isOpen, setOpen] = useState(false);
 
     return (
-        <div className="flex items-center mb-4 justify-between">
-            <LimitList limit={limit} setLimit={setLimit} />
+        <div className="flex justify-between mb-3 items-center">
+            <div className="">
+                <span>Кількість записів:</span>
 
-            <PriorityList sortField={sortField} setSortField={setSortField} />
+                <ul className="flex gap-1 items-center">
+                    {LIMIT.map((item) => (
+                        <li key={item.value}>
+                            <Button
+                                onClick={() => setLimit(item.value)}
+                                variant={limit === item.value ? 'outline' : 'default'}
+                            >
+                                {item.alias}
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
 
-            <div className="flex flex-col gap-1">
-                <span className="text-muted-foreground">Сортувати:</span>
-                <Button onClick={handleSort}>Сортувати</Button>
+            <div>
+                <span>Сортувати за:</span>
+                <ul className="flex gap-1 items-center">
+                    {SORTED_BY.map((item) => (
+                        <li key={item.value}>
+                            <Button
+                                onClick={() => setSortedBy(item)}
+                                variant={sortedBy.value === item.value ? 'outline' : 'default'}
+                            >
+                                {item.alias}
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className="flex flex-col">
+                <span>Алгоритм сортування:</span>
+
+                <DropdownMenu open={isOpen} onOpenChange={setOpen}>
+                    <DropdownMenuTrigger asChild>
+                        <Button>{selectedMethod.alias}</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <ul>
+                            {algs.map((item) => (
+                                <DropdownMenuItem
+                                    onClick={() => setSelectedMethod(item)}
+                                    key={item.value}
+                                >
+                                    {item.alias}
+                                </DropdownMenuItem>
+                            ))}
+                        </ul>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </div>
     );

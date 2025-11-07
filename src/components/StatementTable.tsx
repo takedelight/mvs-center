@@ -1,50 +1,37 @@
 import { Table } from '@/components/ui/table';
-import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { ApiResponse, Statement } from '@/types/statement.type.ts';
-import { Sorter } from '@/lib/sorter.ts';
-import { TopBar } from '@/components/TopBar.tsx';
-import type { SortedValue } from '@/types/sorted.type.ts';
-import type { ChartData } from '@/types/chart-data.type';
-import { Chart } from './Chart';
 import { getStatements } from '@/helpers/get-statements';
 import { TableHeader } from './table/TableHead';
 import { TableBody } from './table/TableBody';
-
-export type SortedData = {
-    sortedArray: Statement[];
-    time: number;
-    comparisons: number;
-    complexity: string;
-};
+import type { ApiResponse } from '@/types/api.type';
+import { TopBar } from './TopBar';
+import { useState } from 'react';
+import type { SelectedMethod } from '@/types/selected-method.type';
+import type { SortedBy } from '@/constants/sorted';
 
 export const StatementTable = () => {
-    const [sortField, setSortField] = useState<SortedValue>('createdAt');
     const [limit, setLimit] = useState(100);
-    const [chartsData, setChartsData] = useState<ChartData[]>([]);
-    const [sortedArray, setSortedArray] = useState<null | SortedData>(null);
-
+    const [selectedMethod, setSelectedMethod] = useState<SelectedMethod>({
+        alias: 'Відкрити',
+        value: '',
+    });
+    const [sortedBy, setSortedBy] = useState<SortedBy>({ alias: 'Дата створення', value: 'date' });
     const { data, isLoading, isError, refetch } = useQuery<ApiResponse>({
-        queryKey: ['data', limit],
-        queryFn: () => getStatements(limit),
+        queryKey: ['data', limit, selectedMethod.value, sortedBy.value],
+        queryFn: () => getStatements(limit, selectedMethod.value, sortedBy.value),
         refetchOnWindowFocus: false,
     });
-
-    const sorter = useMemo(() => new Sorter(data?.data ?? []), [data]);
-    const tableData = sortedArray?.sortedArray ?? data?.data ?? [];
 
     return (
         <>
             <TopBar
-                limit={limit}
                 setLimit={setLimit}
-                sortField={sortField}
-                sorter={sorter}
-                setSortedArray={setSortedArray}
-                setSortField={setSortField}
-                setChartsData={setChartsData}
+                limit={limit}
+                sortedBy={sortedBy}
+                setSortedBy={setSortedBy}
+                selectedMethod={selectedMethod}
+                setSelectedMethod={setSelectedMethod}
             />
-
             <div className="border border-border rounded max-h-[500px] overflow-auto">
                 <Table className="w-full h-full divide-y divide-border">
                     <TableHeader />
@@ -53,12 +40,23 @@ export const StatementTable = () => {
                         isLoading={isLoading}
                         isError={isError}
                         refetch={refetch}
-                        data={tableData}
+                        statements={data?.statements ?? null}
                     />
                 </Table>
             </div>
 
-            {chartsData.length > 0 && <Chart data={chartsData} />}
+            <div className="text-muted-foreground flex justify-end">
+                {' '}
+                Кількість записів: {data?.length}
+            </div>
+
+            {data?.time && data?.comparisions && (
+                <div className="flex flex-col gap-1">
+                    <span>Метод сортування: {data?.method}</span>
+                    <span>Час виконання: {data?.time}</span>
+                    <span>Кількість операцій: {data?.comparisions}</span>
+                </div>
+            )}
         </>
     );
 };

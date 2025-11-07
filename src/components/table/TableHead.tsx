@@ -7,6 +7,7 @@ export const TableHeader = () => (
             <TableHead className="text-center">Тип</TableHead>
             <TableHead>Клієнт</TableHead>
             <TableHead>Пріоритет</TableHead>
+            <TableHead className="text-center">Статус</TableHead>
             <TableHead className="text-center">Дата створення</TableHead>
         </TableRow>
     </THeader>
