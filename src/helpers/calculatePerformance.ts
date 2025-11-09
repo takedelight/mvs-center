@@ -1,5 +1,3 @@
-import type { ApiResponse } from '@/pages/stats/StatsPage';
-
 export const calcPerformance = (data: ApiResponse[]) => {
     if (!data.length) return [];
 
