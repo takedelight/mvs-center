@@ -5,14 +5,7 @@ import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { SelectedMethod } from '@/types/selected-method.type';
 import { SORTED_BY, type SortedBy } from '@/constants/sorted';
-
-const algs = [
-    { alias: 'Сортування купою', value: 'heapSort' },
-    { alias: 'Сортування вставками', value: 'insertionSort' },
-    { alias: 'Сортування бульбашкою', value: 'bubbleSort' },
-    { alias: 'Сортування злиттям', value: 'mergeSort' },
-    { alias: 'Швидке сортування ', value: 'quickSort' },
-];
+import { ALGORITHMS } from '@/constants/alghoritms';
 
 type Props = {
     selectedMethod: SelectedMethod;
@@ -76,7 +69,7 @@ export const TopBar = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <ul>
-                            {algs.map((item) => (
+                            {ALGORITHMS.map((item) => (
                                 <DropdownMenuItem
                                     onClick={() => setSelectedMethod(item)}
                                     key={item.value}

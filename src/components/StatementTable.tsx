@@ -15,7 +15,10 @@ export const StatementTable = () => {
         alias: 'Відкрити',
         value: '',
     });
-    const [sortedBy, setSortedBy] = useState<SortedBy>({ alias: 'Дата створення', value: 'date' });
+    const [sortedBy, setSortedBy] = useState<SortedBy>({
+        alias: 'Дата створення',
+        value: 'createdAt',
+    });
     const { data, isLoading, isError, refetch } = useQuery<ApiResponse>({
         queryKey: ['data', limit, selectedMethod.value, sortedBy.value],
         queryFn: () => getStatements(limit, selectedMethod.value, sortedBy.value),
