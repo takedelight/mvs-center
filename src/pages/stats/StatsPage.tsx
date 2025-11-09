@@ -8,6 +8,15 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type ApiResponse = {
     time: number;
@@ -47,7 +56,7 @@ export const StatsPage = () => {
         },
         comparisions: {
             label: 'Кількість порівняння',
-            color: '#ff2200',
+            color: '#0D3B18',
         },
     };
 
@@ -68,51 +77,90 @@ export const StatsPage = () => {
                     setSortedBy={setSortedBy}
                     isLimitFilterOpen={isLimitFilterOpen}
                 />
-                <div className="bg-white  m-3 rounded-md  p-1">
-                    {!data && (
-                        <div className="h-full flex items-center flex-col  justify-center">
-                            <span className="text-muted-foreground">
-                                Немає даних для порівняння, буль ласка оберіть декілька алгоритмів
-                            </span>
-                        </div>
-                    )}
+                <Tabs
+                    defaultValue="chart"
+                    className="bg-neutral-100 flex flex-col  gap-2 h-[560px]  m-3 rounded-xl   p-2"
+                >
+                    <TabsList className="w-full ">
+                        <TabsTrigger value="chart">Графік</TabsTrigger>
+                        <TabsTrigger value="table">Таблиця</TabsTrigger>
+                    </TabsList>
 
-                    {isLoading && (
-                        <div className="h-full flex items-center flex-col  justify-center">
-                            <Loader />
-                        </div>
-                    )}
+                    <TabsContent value="chart">
+                        <div className="bg-neutral-100 rounded-md h-[500px] p-3">
+                            {isLoading && (
+                                <div className="h-full flex items-center flex-col  justify-center">
+                                    <Loader />
+                                </div>
+                            )}
 
-                    {!isLoading && !data && (
-                        <div className="h-full flex items-center flex-col  justify-center">
-                            <span className="text-muted-foreground">
-                                Виникла помилка, будь ласка, стпробуйте ще раз
-                            </span>
-                            <Button onClick={() => refetch()} variant="outline">
-                                Спробувати знову
-                                <RefreshCw />
-                            </Button>
-                        </div>
-                    )}
+                            {!isLoading && !data && (
+                                <div className="h-full flex items-center flex-col  justify-center">
+                                    <span className="text-muted-foreground">Немає даних</span>
+                                </div>
+                            )}
 
-                    {data && data.length > 0 && (
-                        <ChartContainer config={config}>
-                            <LineChart data={data}>
-                                <CartesianGrid strokeDasharray={'3 3'} />
-                                <Legend />
-                                <Tooltip content={<ChartTooltipContent />} />
-                                <XAxis dataKey="method" />
-                                <YAxis dataKey="comparisions" />
-                                <Line type="monotone" dataKey="time" stroke={config.time.color} />
-                                <Line
-                                    type="monotone"
-                                    dataKey="comparisions"
-                                    stroke={config.comparisions.color}
-                                />
-                            </LineChart>
-                        </ChartContainer>
-                    )}
-                </div>
+                            {isError && !data && (
+                                <div className="h-full flex items-center flex-col  justify-center">
+                                    <span className="text-muted-foreground">
+                                        Виникла помилка, будь ласка, стпробуйте ще раз
+                                    </span>
+                                    <Button onClick={() => refetch()} variant="outline">
+                                        Спробувати знову
+                                        <RefreshCw />
+                                    </Button>
+                                </div>
+                            )}
+
+                            {data && data.length > 0 && (
+                                <ChartContainer config={config}>
+                                    <LineChart data={data}>
+                                        <CartesianGrid strokeDasharray={'3 3'} />
+                                        <Legend />
+                                        <Tooltip content={<ChartTooltipContent />} />
+                                        <XAxis dataKey="method" />
+                                        <YAxis dataKey="comparisions" />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="time"
+                                            width={2}
+                                            strokeWidth={2}
+                                            stroke={config.time.color}
+                                        />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="comparisions"
+                                            stroke={config.comparisions.color}
+                                        />
+                                    </LineChart>
+                                </ChartContainer>
+                            )}
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="table">
+                        {' '}
+                        <div className="border  bg-neutral-100 p-3  border-border rounded h-[500px] overflow-auto">
+                            <Table className="w-full bg-white h-full divide-y divide-border">
+                                <TableHeader>
+                                    <TableHead>Метод</TableHead>
+                                    <TableHead>Час виконання (ms)</TableHead>
+                                    <TableHead>Кількість порівнянь</TableHead>
+                                </TableHeader>
+
+                                <TableBody>
+                                    {data?.map((item) => (
+                                        <TableRow key={item.method}>
+                                            <TableCell>{item.method}</TableCell>
+                                            <TableCell>{item.time}</TableCell>
+                                            <TableCell>{item.comparisions}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
         </section>
     );
