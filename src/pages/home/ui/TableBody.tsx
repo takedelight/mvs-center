@@ -1,10 +1,8 @@
+import type { ApiResponse } from '@/shared/types/api.type';
+import type { Statement } from '@/shared/types/statement.type';
+import { TableCell, TableRow, TableBody as TBody, Button, Loader } from '@/shared/ui';
 import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Loader } from '../ui/loader';
-import { TableCell, TableRow, TableBody as TBody } from '../ui/table';
-import type { ApiResponse } from '@/types/api.type';
-import { Button } from '../ui/button';
 import { Inbox, RotateCw } from 'lucide-react';
-import type { Statement } from '@/types/statement.type';
 
 type Props = {
     isLoading: boolean;

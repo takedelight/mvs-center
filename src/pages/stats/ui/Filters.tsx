@@ -1,24 +1,23 @@
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ALGORITHMS } from '@/constants/alghoritms';
-import { SORTED_BY } from '@/constants/sorted';
-import { LIMIT } from '@/constants/statements';
+import { ALGORITHMS } from '@/shared/constants/alghoritms';
+import { LIMIT } from '@/shared/constants/limit';
+import { SORTED_BY } from '@/shared/constants/sorted';
+import { RadioGroup, RadioGroupItem, Checkbox, Label } from '@/shared/ui';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import type { Dispatch, SetStateAction } from 'react';
 
 type Props = {
     isLimitFilterOpen: boolean;
-    setLimitFilterOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setLimitFilterOpen: Dispatch<SetStateAction<boolean>>;
     isMethodFilterOpen: boolean;
-    setMethodFilterOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setMethodFilterOpen: Dispatch<SetStateAction<boolean>>;
     limit: string;
-    setLimit: React.Dispatch<React.SetStateAction<string>>;
+    setLimit: Dispatch<SetStateAction<string>>;
     methods: string[];
-    setMethods: React.Dispatch<React.SetStateAction<string[]>>;
+    setMethods: Dispatch<SetStateAction<string[]>>;
     isSortedByOpen: boolean;
-    setSortedByOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setSortedByOpen: Dispatch<SetStateAction<boolean>>;
     sortedBy: string;
-    setSortedBy: React.Dispatch<React.SetStateAction<string>>;
+    setSortedBy: Dispatch<SetStateAction<string>>;
 };
 
 export const Filter = ({
@@ -42,7 +41,6 @@ export const Filter = ({
     return (
         <div className="rounded-sm z-10 w-[250px] p-1 bg-white transition-all ease-in-out duration-150">
             <div className="flex flex-col  mt-4 gap-1 bg-white/20 backdrop-blur-3xl">
-                {/* Limit filter */}
                 <div className="px-3">
                     <span
                         onClick={() => setLimitFilterOpen((prev) => !prev)}
@@ -68,7 +66,6 @@ export const Filter = ({
                     </RadioGroup>
                 </div>
 
-                {/* Methods filter */}
                 <div className="px-3">
                     <span
                         onClick={() => setMethodFilterOpen((prev) => !prev)}
@@ -93,7 +90,6 @@ export const Filter = ({
                     </ul>
                 </div>
 
-                {/* SortedBy filter */}
                 <div className="px-3">
                     <span
                         onClick={() => setSortedByOpen((prev) => !prev)}

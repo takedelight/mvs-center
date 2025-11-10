@@ -1,15 +1,14 @@
-import { Table } from '@/components/ui/table';
+import type { SortedBy } from '@/shared/constants/sorted';
+import { getStatements } from '@/shared/helpers/get-statements';
+import type { ApiResponse } from '@/shared/types/api.type';
+import type { SelectedMethod } from '@/shared/types/selected-method.type';
 import { useQuery } from '@tanstack/react-query';
-import { getStatements } from '@/helpers/get-statements';
-import { TableHeader } from './table/TableHead';
-import { TableBody } from './table/TableBody';
-import type { ApiResponse } from '@/types/api.type';
-import { TopBar } from './TopBar';
 import { useState } from 'react';
-import type { SelectedMethod } from '@/types/selected-method.type';
-import type { SortedBy } from '@/constants/sorted';
+import { Table } from '@/shared/ui';
+import { TableHeader } from './TableHead';
+import { TableBody } from './TableBody';
 
-export const StatementTable = () => {
+export const MainTable = () => {
     const [limit, setLimit] = useState(100);
     const [selectedMethod, setSelectedMethod] = useState<SelectedMethod>({
         alias: 'Відкрити',
@@ -27,15 +26,7 @@ export const StatementTable = () => {
 
     return (
         <>
-            <TopBar
-                setLimit={setLimit}
-                limit={limit}
-                sortedBy={sortedBy}
-                setSortedBy={setSortedBy}
-                selectedMethod={selectedMethod}
-                setSelectedMethod={setSelectedMethod}
-            />
-            <div className="border border-border rounded max-h-[500px] overflow-auto">
+            <div className="border border-border rounded h-[80vh] overflow-auto">
                 <Table className="w-full h-full divide-y divide-border">
                     <TableHeader />
 

@@ -1,23 +1,26 @@
-import { LIMIT } from '@/constants/statements';
-import { useDebounce } from '@/hooks/useDebounce';
+import { LIMIT } from '@/shared/constants/limit';
+import { useDebounce } from '@/shared/hooks/useDebounce';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Filter } from './ui/Filters';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
-import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
-import { Loader } from '@/components/ui/loader';
 import {
+    ChartContainer,
+    ChartTooltipContent,
+    Loader,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/shared/ui';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
+import { Button } from '@/shared/ui/button';
+import { RefreshCw } from 'lucide-react';
 type ApiResponse = {
     time: number;
     comparisions: number;
@@ -43,7 +46,7 @@ export const StatsPage = () => {
         queryKey: ['stats', limit, debauncedMethods, sortedBy],
         queryFn: () =>
             fetch(
-                `http://localhost:3000/stats?limit=${limit}&${algorithmParams}&sort_by=${sortedBy}`,
+                `${import.meta.env.VITE_PUBLIC_API_URL}/stats?limit=${limit}&${algorithmParams}&sort_by=${sortedBy}`,
             ).then((res) => res.json()),
         refetchOnWindowFocus: false,
         enabled: debauncedMethods.length > 1,

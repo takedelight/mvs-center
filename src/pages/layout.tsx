@@ -1,6 +1,6 @@
+import { Loader } from '@/shared/ui';
 import { Suspense } from 'react';
 import { NavLink, Outlet } from 'react-router';
-import { Loader } from './ui/loader';
 
 export const Layout = () => {
     return (

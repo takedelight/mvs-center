@@ -1,4 +1,4 @@
-import { TableHeader as THeader, TableHead, TableRow } from '../ui/table';
+import { TableHeader as THeader, TableHead, TableRow } from '@/shared/ui';
 
 export const TableHeader = () => (
     <THeader className="bg-background">
