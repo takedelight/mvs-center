@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Table } from '@/shared/ui';
 import { TableHeader } from './TableHead';
 import { TableBody } from './TableBody';
+import { TopBar } from '@/components/TopBar';
 
 export const MainTable = () => {
     const [limit, setLimit] = useState(100);
@@ -26,7 +27,16 @@ export const MainTable = () => {
 
     return (
         <>
-            <div className="border border-border rounded h-[80vh] overflow-auto">
+            <TopBar
+                setLimit={setLimit}
+                limit={limit}
+                setSelectedMethod={setSelectedMethod}
+                selectedMethod={selectedMethod}
+                setSortedBy={setSortedBy}
+                sortedBy={sortedBy}
+            />
+
+            <div className="border border-border rounded h-[500px] overflow-auto">
                 <Table className="w-full h-full divide-y divide-border">
                     <TableHeader />
 
