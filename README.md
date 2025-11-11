@@ -39,3 +39,13 @@ cd mvs-center
 npm install
 npm run dev
 ```
+
+### 3. Налаштування середовища
+
+Скопіюйте приклад конфігурації та відредагуйте за потреби:
+
+```bash
+cp .env.example .env
+```
+
+Клієнт буде доступним за адресою: [http://localhost:5173](http://localhost:5173)
