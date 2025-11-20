@@ -7,6 +7,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { App } from './App.tsx';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { RootLayout } from './layout.tsx';
+import { NotFoundPage } from './not-found.tsx';
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
                     <Routes>
                         <Route element={<RootLayout />}>
                             <Route index element={<App />} />
+                            <Route path="*" element={<NotFoundPage />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
