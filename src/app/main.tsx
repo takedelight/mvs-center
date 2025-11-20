@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { lazy, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -7,8 +7,16 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { App } from './App.tsx';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { RootLayout } from './layout.tsx';
-import { NotFoundPage } from './not-found.tsx';
+import { ToastContainer } from 'react-toastify';
 const queryClient = new QueryClient();
+
+const LazySignInPage = lazy(() =>
+    import('@/pages/SignIn').then((module) => ({ default: module.SignInPage })),
+);
+
+const LazyNotFoundPage = lazy(() =>
+    import('@/app/not-found.tsx').then((module) => ({ default: module.NotFoundPage })),
+);
 
 createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
@@ -18,10 +26,12 @@ createRoot(document.getElementById('root')!).render(
                     <Routes>
                         <Route element={<RootLayout />}>
                             <Route index element={<App />} />
-                            <Route path="*" element={<NotFoundPage />} />
+                            <Route path="*" element={<LazyNotFoundPage />} />\
+                            <Route path="/signin" element={<LazySignInPage />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
+                <ToastContainer position="bottom-right"  />
             </ErrorBoundary>
         </StrictMode>
         <ReactQueryDevtools initialIsOpen={false} />
