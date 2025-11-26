@@ -1,5 +1,4 @@
 import { api } from '@/shared/api';
-import { useLocalStorage } from '@/shared/hooks';
 import { cn } from '@/shared/lib/utils';
 import {
     Button,
@@ -16,7 +15,6 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SignInForm = () => {
-    const { setValue } = useLocalStorage<string>('access_token', '');
     const [inputValues, setInputValues] = useState({
         email: '',
         password: '',
@@ -36,7 +34,7 @@ export const SignInForm = () => {
         try {
             const response = await api.post('auth/login', { ...inputValues });
 
-            setValue(response.data.access_token);
+            localStorage.setItem('access_token', response.data.access_token);
 
             toast.success('Ви увійшли у свій профіль!');
 
