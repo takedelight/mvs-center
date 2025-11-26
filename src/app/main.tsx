@@ -11,30 +11,34 @@ import { ToastContainer } from 'react-toastify';
 const queryClient = new QueryClient();
 
 const LazySignInPage = lazy(() =>
-    import('@/pages/SignIn').then((module) => ({ default: module.SignInPage })),
+  import('@/pages/SignIn').then((module) => ({ default: module.SignInPage })),
 );
 
 const LazyNotFoundPage = lazy(() =>
-    import('@/app/not-found.tsx').then((module) => ({ default: module.NotFoundPage })),
+  import('@/app/not-found.tsx').then((module) => ({ default: module.NotFoundPage })),
+);
+
+const LazyProfilePage = lazy(() =>
+  import('@/pages/Profile').then((module) => ({ default: module.ProfilePage })),
 );
 
 createRoot(document.getElementById('root')!).render(
-    <QueryClientProvider client={queryClient}>
-        <StrictMode>
-            <ErrorBoundary fallback={<h1>Something went wrong</h1>}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route element={<RootLayout />}>
-                            <Route index element={<App />} />
-                            <Route path="*" element={<LazyNotFoundPage />} />\
-                            <Route path="/signin" element={<LazySignInPage />} />
-                        </Route>
-                    </Routes>
-                </BrowserRouter>
-                <ToastContainer position="bottom-right"  />
-            </ErrorBoundary>
-        </StrictMode>
-        <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>,
+  <QueryClientProvider client={queryClient}>
+    <StrictMode>
+      <ErrorBoundary fallback={<h1>Something went wrong</h1>}>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<RootLayout />}>
+              <Route index element={<App />} />
+              <Route path="*" element={<LazyNotFoundPage />} />\
+              <Route path="/signin" element={<LazySignInPage />} />
+              <Route path="/profile" element={<LazyProfilePage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer position="bottom-right" />
+      </ErrorBoundary>
+    </StrictMode>
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>,
 );
-
