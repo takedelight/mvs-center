@@ -31,20 +31,7 @@ export const Header = () => {
 
         <ul className="flex items-center gap-3">
           <li>
-            <NavLink
-              className={({ isActive }) =>
-                cn(
-                  'ease-in-out duration-150 transition-all hover:text-blue-600',
-                  isActive ? 'font-semibold text-blue-700 ' : '',
-                )
-              }
-              to="/"
-            >
-              Головна
-            </NavLink>
-          </li>
-          <li>
-            {data?.role === ' operator' && (
+            {data?.role === 'operator' && (
               <NavLink
                 className={({ isActive }) =>
                   cn(
@@ -54,26 +41,28 @@ export const Header = () => {
                 }
                 to="/comparisions"
               >
-                Всі заявки
+                Адмінка
               </NavLink>
             )}
           </li>
-        </ul>
 
-        {!data ? (
-          <Link className={cn(buttonVariants({ variant: 'ghost' }))} to="/signin">
-            <UserRound className="size-5" />
-            Увійти
-          </Link>
-        ) : (
-          <Link to="/profile">
-            <Avatar>
-              <AvatarFallback className="bg-primary text-white">
-                {(data?.firstName?.[0] ?? '') + (data?.lastName?.[0] ?? '')}
-              </AvatarFallback>
-            </Avatar>
-          </Link>
-        )}
+          <li>
+            {!data ? (
+              <Link className={cn(buttonVariants({ variant: 'ghost' }))} to="/signin">
+                <UserRound className="size-5" />
+                Увійти
+              </Link>
+            ) : (
+              <Link to="/profile">
+                <Avatar>
+                  <AvatarFallback className="bg-primary text-white">
+                    {(data?.firstName?.[0] ?? '') + (data?.lastName?.[0] ?? '')}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            )}
+          </li>
+        </ul>
       </nav>
     </header>
   );
