@@ -1,46 +1,120 @@
 import { api } from '@/shared/api';
-import { Avatar, AvatarFallback } from '@/shared/ui';
+import { Button, Input } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
-import { useQuery } from '@tanstack/react-query';
-import { SquarePen } from 'lucide-react';
-import { Link } from 'react-router';
+import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { useState, type ChangeEvent } from 'react';
+import { useOutletContext } from 'react-router';
+import { toast } from 'react-toastify';
+
+interface UserInfo {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password?: string;
+}
 
 export const ProfilePage = () => {
-  const { data } = useQuery<User>({
-    queryKey: ['profile'],
-    refetchOnWindowFocus: false,
-    queryFn: () => api.get('/profile').then((res) => res.data),
-  });
+  const [user, refetch] =
+    useOutletContext<
+      [
+        user: User,
+        refetch: (
+          options?: RefetchOptions | undefined,
+        ) => Promise<QueryObserverResult<User, Error>>,
+      ]
+    >();
+
+  console.log(user);
+
+  const [userInfo, setUserInfo] = useState<UserInfo>(() => ({
+    email: user?.email ?? '',
+    firstName: user?.firstName ?? '',
+    lastName: user?.lastName ?? '',
+    password: '',
+  }));
+
+  if (!user) return null;
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value, name },
+    } = e;
+
+    setUserInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleUpdate = async () => {
+    const payload = { ...userInfo };
+
+    if (!payload.password) {
+      delete payload.password;
+    }
+
+    const response = await api.patch('/user/update', payload);
+
+    toast.success(response.data.message);
+
+    refetch();
+  };
 
   return (
-    <section className="container h-[88vh] flex justify-center items-center mx-auto px-1">
-      <div className="bg-white h-[700px] grid grid-cols-4 w-[1200px]">
-        <aside className="border p-2 ">
-          <div className="flex max-w-full overflow-hidden items-center gap-1 ">
-            <Avatar>
-              <AvatarFallback className="bg-primary text-white">
-                {(data?.firstName?.[0] ?? '') + (data?.lastName?.[0] ?? '')}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col ">
-              <span className="truncate">
-                {data?.firstName} {''} {data?.lastName}
-              </span>
-              <Link
-                to="/profile#email"
-                className="text-sm group transition-colors ease-in-out duration-150 hover:text-muted-foreground gap-1 flex truncate items-center"
-              >
-                {data?.email}{' '}
-                <SquarePen
-                  size={10}
-                  className="opacity-0 ease-in-out duration-150 transition-opacity group-hover:opacity-100"
-                />
-              </Link>
-            </div>
+    <>
+      <h1 className="font-semibold text-2xl mt-3">Профіль</h1>
+
+      <div className="mt-5 border p-2 rounded-md">
+        <h2 className="font-semibold">Особисті дані:</h2>
+        <form className="flex gap-3 mt-2 flex-wrap">
+          <div className="w-[300px]">
+            <label htmlFor="firstName">Ім'я</label>
+            <Input
+              id="firstName"
+              name="firstName"
+              value={userInfo.firstName}
+              onChange={handleChange}
+            />
           </div>
-        </aside>
-        <div className="col-start-2  col-end-5 "></div>
+          <div className="w-[300px]">
+            <label htmlFor="lastName">Прізвище</label>
+            <Input
+              id="lastName"
+              name="lastName"
+              value={userInfo.lastName}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="w-[300px]">
+            <label htmlFor="email">Email</label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={userInfo.email}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="w-[300px]">
+            <label htmlFor="password">Пароль</label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              value={userInfo.password}
+              onChange={handleChange}
+            />
+          </div>
+        </form>
+        <Button
+          onClick={handleUpdate}
+          disabled={
+            userInfo.email === user.email &&
+            userInfo.firstName === user.firstName &&
+            userInfo.lastName === user.lastName
+          }
+          className="mt-2"
+        >
+          Зберегти зміни
+        </Button>
       </div>
-    </section>
+    </>
   );
 };

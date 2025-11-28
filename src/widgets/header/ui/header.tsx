@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router';
-import { UserRound } from 'lucide-react';
+import { User, UserRound } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Avatar, AvatarFallback, buttonVariants } from '@/shared/ui';
 import { useQuery } from '@tanstack/react-query';
@@ -44,17 +44,19 @@ export const Header = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink
-              className={({ isActive }) =>
-                cn(
-                  'ease-in-out duration-150 transition-all hover:text-blue-600',
-                  isActive ? 'font-semibold text-blue-700 ' : '',
-                )
-              }
-              to="/comparisions"
-            >
-              Порівняння
-            </NavLink>
+            {data?.role === ' operator' && (
+              <NavLink
+                className={({ isActive }) =>
+                  cn(
+                    'ease-in-out duration-150 transition-all hover:text-blue-600',
+                    isActive ? 'font-semibold text-blue-700 ' : '',
+                  )
+                }
+                to="/comparisions"
+              >
+                Всі заявки
+              </NavLink>
+            )}
           </li>
         </ul>
 

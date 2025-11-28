@@ -8,7 +8,8 @@ import { App } from './App.tsx';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { RootLayout } from './layout.tsx';
 import { ToastContainer } from 'react-toastify';
-const queryClient = new QueryClient();
+import { ProfileLayout } from './profile/layout.tsx';
+export const queryClient = new QueryClient();
 
 const LazySignInPage = lazy(() =>
   import('@/pages/SignIn').then((module) => ({ default: module.SignInPage })),
@@ -22,6 +23,13 @@ const LazyProfilePage = lazy(() =>
   import('@/pages/Profile').then((module) => ({ default: module.ProfilePage })),
 );
 
+const LazyStatementsPage = lazy(() =>
+  import('@/pages/Statements').then((module) => ({ default: module.StatementsPage })),
+);
+const LazySettingsPage = lazy(() =>
+  import('@/pages/Settings').then((module) => ({ default: module.SettingsPage })),
+);
+
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <StrictMode>
@@ -32,7 +40,11 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<App />} />
               <Route path="*" element={<LazyNotFoundPage />} />\
               <Route path="/signin" element={<LazySignInPage />} />
-              <Route path="/profile" element={<LazyProfilePage />} />
+              <Route path="/profile" element={<ProfileLayout />}>
+                <Route path="/profile" element={<LazyProfilePage />} />
+                <Route path="/profile/statements" element={<LazyStatementsPage />} />
+                <Route path="/profile/settings" element={<LazySettingsPage />} />
+              </Route>
             </Route>
           </Routes>
         </BrowserRouter>

@@ -1,3 +1,4 @@
+import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
 import { Suspense } from 'react';
 import { Outlet } from 'react-router';
@@ -7,7 +8,13 @@ export const RootLayout = () => {
     <div className="flex flex-col h-screen antialiased">
       <Header />
 
-      <Suspense fallback={<div>load...</div>}>
+      <Suspense
+        fallback={
+          <div className="h-screen flex justify-center items-center">
+            <Spinner />
+          </div>
+        }
+      >
         <main className="flex-1 bg-neutral-100">
           <Outlet />
         </main>
