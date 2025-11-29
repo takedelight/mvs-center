@@ -59,7 +59,7 @@ export const ProfilePage = () => {
       <div className="mt-5 border p-2 rounded-md">
         <h2 className="font-semibold">Особисті дані:</h2>
         <form className="flex gap-3 mt-2 flex-wrap">
-          <div className="w-[300px]">
+          <div className="w-[400px]">
             <label htmlFor="firstName">Ім'я</label>
             <Input
               id="firstName"
@@ -68,7 +68,7 @@ export const ProfilePage = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="w-[300px]">
+          <div className="w-[400px]">
             <label htmlFor="lastName">Прізвище</label>
             <Input
               id="lastName"
@@ -77,7 +77,7 @@ export const ProfilePage = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="w-[300px]">
+          <div className="w-[400px]">
             <label htmlFor="email">Email</label>
             <Input
               id="email"
@@ -87,7 +87,7 @@ export const ProfilePage = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="w-[300px]">
+          <div className="w-[400px]">
             <label htmlFor="password">Пароль</label>
             <Input
               id="password"
@@ -105,7 +105,7 @@ export const ProfilePage = () => {
             userInfo.firstName === user.firstName &&
             userInfo.lastName === user.lastName
           }
-          className="mt-2"
+          className="mt-4"
         >
           Зберегти зміни
         </Button>

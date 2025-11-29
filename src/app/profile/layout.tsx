@@ -1,27 +1,14 @@
-import {
-  Avatar,
-  AvatarFallback,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-  Button,
-} from '@/shared/ui';
+import { Avatar, AvatarFallback, Button } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
-import { Link, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router';
+import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const ProfileLayout = () => {
   const [user, refetch] = useOutletContext<[User | undefined, () => void]>();
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const parts = location.pathname.split('/').filter(Boolean);
-
-  const buildPath = (index: number) => '/' + parts.slice(0, index + 1).join('/');
 
   const token = localStorage.getItem('access_token');
 
@@ -47,8 +34,8 @@ export const ProfileLayout = () => {
   if (!token) return null;
 
   return (
-    <section className="container h-[88vh] flex justify-center items-center mx-auto px-1">
-      <div className="bg-white relative  h-[700px] rounded-sm grid grid-cols-4 w-[1200px]">
+    <section className="container h-[85vh] mt-5 mx-auto px-1">
+      <div className="bg-white relative h-full rounded-sm grid grid-cols-4 ">
         <aside className="border-r col-start-1 col-end-2 flex flex-col h-full">
           <div className="flex max-w-full p-2 overflow-hidden border-b items-center gap-2">
             <Link to="/profile">
@@ -64,7 +51,7 @@ export const ProfileLayout = () => {
                 {user?.firstName} {user?.lastName}
               </Link>
               <Link
-                to="/profile#email"
+                to="/profile"
                 className="text-sm group transition-colors ease-in-out duration-150 hover:text-muted-foreground gap-1 flex truncate items-center"
               >
                 {user?.email}
@@ -114,30 +101,7 @@ export const ProfileLayout = () => {
         </aside>
 
         <div className="col-start-2 p-2   col-end-5 ">
-          <div>
-            <Breadcrumb>
-              <BreadcrumbList className="">
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to="/">Головна</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-
-                {parts.map((part, index) => (
-                  <div key={index} className="flex items-center">
-                    <BreadcrumbSeparator />
-
-                    <BreadcrumbItem>
-                      <BreadcrumbLink asChild>
-                        <Link to={buildPath(index)}>{decodeURIComponent(part)}</Link>
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                  </div>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <div className="w-[800px]  mx-auto">
+          <div className="  mx-auto">
             <Outlet context={{ user, refetch }} />
           </div>
         </div>
