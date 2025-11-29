@@ -15,6 +15,7 @@ import {
 import type { User } from '@/widgets/header/ui/header';
 import {} from '@radix-ui/react-dialog';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { toast } from 'react-toastify';
 
 interface Props {
   editingUser: User | null;
@@ -55,7 +56,7 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
     updatedUser.role === editingUser?.role;
 
   const handleUpdate = async () => {
-    const response = await api.patch('/user/update', {
+    await api.patch('/user/update', {
       email: updatedUser.email,
       role: updatedUser.role,
       firstName: updatedUser.firstName,
@@ -64,6 +65,7 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
 
     setEditingUser(null);
     refetch();
+    toast.success('Дані користувача успішно оновленно.');
   };
 
   return (

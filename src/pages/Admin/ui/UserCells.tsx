@@ -31,12 +31,14 @@ export const getUserColumns = ({ refetch, setEditingUser }: Props): ColumnDef<Us
         onCheckedChange={(val) => table.toggleAllPageRowsSelected(!!val)}
       />
     ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(val) => row.toggleSelected(!!val)}
-      />
-    ),
+    cell: ({ row }) => {
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(val) => row.toggleSelected(!!val)}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
