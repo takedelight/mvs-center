@@ -39,7 +39,7 @@ export const Header = () => {
                     isActive ? 'font-semibold text-blue-700 ' : '',
                   )
                 }
-                to="/comparisions"
+                to="/admin"
               >
                 Адмінка
               </NavLink>

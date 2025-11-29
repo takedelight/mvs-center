@@ -14,15 +14,10 @@ interface UserInfo {
 }
 
 export const ProfilePage = () => {
-  const [user, refetch] =
-    useOutletContext<
-      [
-        user: User,
-        refetch: (
-          options?: RefetchOptions | undefined,
-        ) => Promise<QueryObserverResult<User, Error>>,
-      ]
-    >();
+  const { refetch, user } = useOutletContext<{
+    user: User;
+    refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<User, Error>>;
+  }>();
 
   console.log(user);
 

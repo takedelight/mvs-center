@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { RootLayout } from './layout.tsx';
 import { ToastContainer } from 'react-toastify';
 import { ProfileLayout } from './profile/layout.tsx';
+import { AdminLayout } from './admin/layout.tsx';
 export const queryClient = new QueryClient();
 
 const LazySignInPage = lazy(() =>
@@ -30,6 +31,14 @@ const LazySettingsPage = lazy(() =>
   import('@/pages/Settings').then((module) => ({ default: module.SettingsPage })),
 );
 
+const LazyAllUsersPage = lazy(() =>
+  import('@/pages/Admin').then((module) => ({ default: module.AllUsersPage })),
+);
+
+const LazyAllStatementsPage = lazy(() =>
+  import('@/pages/Admin').then((module) => ({ default: module.AllStatementsPage })),
+);
+
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <StrictMode>
@@ -38,13 +47,21 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route element={<RootLayout />}>
               <Route index element={<App />} />
-              <Route path="*" element={<LazyNotFoundPage />} />\
+
               <Route path="/signin" element={<LazySignInPage />} />
+
               <Route path="/profile" element={<ProfileLayout />}>
-                <Route path="/profile" element={<LazyProfilePage />} />
-                <Route path="/profile/statements" element={<LazyStatementsPage />} />
-                <Route path="/profile/settings" element={<LazySettingsPage />} />
+                <Route index element={<LazyProfilePage />} />
+                <Route path="statements" element={<LazyStatementsPage />} />
+                <Route path="settings" element={<LazySettingsPage />} />
               </Route>
+
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route path="users" element={<LazyAllUsersPage />} />
+                <Route path="statements" element={<LazyAllStatementsPage />} />
+              </Route>
+
+              <Route path="*" element={<LazyNotFoundPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

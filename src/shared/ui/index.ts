@@ -5,3 +5,7 @@ export * from './avatar';
 export * from './breadcrumb';
 export * from './table';
 export * from './spinner';
+export * from './checkbox';
+export * from './dropdown-menu';
+export * from './dialog';
+export * from './select';

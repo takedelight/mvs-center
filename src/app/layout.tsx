@@ -1,9 +1,18 @@
+import { api } from '@/shared/api';
 import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
+import type { User } from '@/widgets/header/ui/header';
+import { useQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Outlet } from 'react-router';
 
 export const RootLayout = () => {
+  const { data, refetch } = useQuery<User>({
+    queryKey: ['profile'],
+    refetchOnWindowFocus: false,
+    queryFn: () => api.get('/profile').then((res) => res.data),
+  });
+
   return (
     <div className="flex flex-col h-screen antialiased">
       <Header />
@@ -16,7 +25,7 @@ export const RootLayout = () => {
         }
       >
         <main className="flex-1 bg-neutral-100">
-          <Outlet />
+          <Outlet context={[data, refetch]} />
         </main>
       </Suspense>
 

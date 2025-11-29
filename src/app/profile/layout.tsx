@@ -1,4 +1,3 @@
-import { api } from '@/shared/api';
 import {
   Avatar,
   AvatarFallback,
@@ -10,18 +9,13 @@ import {
   Button,
 } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
-import { useQuery } from '@tanstack/react-query';
 import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const ProfileLayout = () => {
-  const { data, refetch } = useQuery<User>({
-    queryKey: ['profile'],
-    refetchOnWindowFocus: false,
-    queryFn: () => api.get('/profile').then((res) => res.data),
-  });
+  const [user, refetch] = useOutletContext<[User | undefined, () => void]>();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,20 +54,20 @@ export const ProfileLayout = () => {
             <Link to="/profile">
               <Avatar>
                 <AvatarFallback className="bg-primary text-white">
-                  {data?.firstName?.[0]?.toUpperCase() ?? ''}
-                  {data?.lastName?.[0]?.toUpperCase() ?? ''}
+                  {user?.firstName?.[0]?.toUpperCase() ?? ''}
+                  {user?.lastName?.[0]?.toUpperCase() ?? ''}
                 </AvatarFallback>
               </Avatar>
             </Link>
             <div className="flex flex-col">
               <Link to="/profile" className="truncate">
-                {data?.firstName} {data?.lastName}
+                {user?.firstName} {user?.lastName}
               </Link>
               <Link
                 to="/profile#email"
                 className="text-sm group transition-colors ease-in-out duration-150 hover:text-muted-foreground gap-1 flex truncate items-center"
               >
-                {data?.email}
+                {user?.email}
                 <SquarePen
                   size={10}
                   className="opacity-0 ease-in-out duration-150 transition-opacity group-hover:opacity-100"
@@ -144,7 +138,7 @@ export const ProfileLayout = () => {
             </Breadcrumb>
           </div>
           <div className="w-[800px]  mx-auto">
-            <Outlet context={[data, refetch]} />
+            <Outlet context={{ user, refetch }} />
           </div>
         </div>
       </div>
