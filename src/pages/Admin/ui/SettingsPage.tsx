@@ -1,14 +1,21 @@
 import { api } from '@/shared/api';
-import { Button, Input } from '@/shared/ui';
+import { Button, Input, Spinner } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
+import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { Eye, EyeClosed } from 'lucide-react';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SettingsPage = () => {
   const [id, setId] = useState('');
-  const [quantity, setQuantity] = useState(10);
+  const [quantity, setQuantity] = useState({
+    tickets: 10,
+    users: 10,
+  });
+  const [password, setPassword] = useState('');
+  const [isVisible, setVisible] = useState(false);
 
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
@@ -21,26 +28,42 @@ export const SettingsPage = () => {
   console.log(user);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+    const { value, name } = e.target;
 
     if (!/^\d*$/.test(value)) return;
 
-    setQuantity(value === '' ? 0 : Number(value));
+    setQuantity((prev) => ({ ...prev, [name]: value === '' ? 0 : Number(value) }));
   };
 
-  const handleGenerate = async () => {
-    try {
-      await api.post(`/ticket/generate/${id}/${quantity}`);
-
+  const generateTicketsMutation = useMutation({
+    mutationKey: ['generateTickets'],
+    mutationFn: async () => {
+      const response = await api.post(`/ticket/generate/${id}/${quantity.tickets}`);
+      return response.data;
+    },
+    onSuccess: () => {
       toast.success('Заяви успішно згенеровано');
-
       refetch();
-    } catch (error) {
+    },
+    onError: (error) => {
       if (isAxiosError(error)) {
         toast.error(error.message);
       }
-    }
-  };
+    },
+  });
+
+  const createUserMutation = useMutation({
+    mutationKey: ['generateUsers'],
+    mutationFn: async () => {
+      const response = await api.post(`/user/generate/${quantity.tickets}`, { password });
+      toast.success(response.data.message);
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        toast.error(error.message);
+      }
+    },
+  });
 
   return (
     <>
@@ -57,11 +80,65 @@ export const SettingsPage = () => {
             </label>
             <label className="flex flex-col w-[200px]">
               <span className="text-sm">Введіть кількість заяв</span>
-              <Input value={quantity} onChange={handleChange} />
+              <Input name="tickets" value={quantity.tickets} onChange={handleChange} />
             </label>
           </div>
-          <Button className="mt-3 w-full" onClick={handleGenerate}>
-            Згенерувати
+          <Button
+            disabled={generateTicketsMutation.isPending}
+            className="mt-3 w-full"
+            onClick={() => generateTicketsMutation.mutate()}
+          >
+            {generateTicketsMutation.isPending ? (
+              <span className="flex items-center">
+                <Spinner /> Згенерувати
+              </span>
+            ) : (
+              <span>Згенерувати</span>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      <div className="mt-5 border rounded-md">
+        <div className="w-[340px]  p-2 ">
+          <h2 className="font-semibold">Згенерувати користувачів</h2>
+          <div className="flex flex-col mt-2 gap-2 ">
+            <label className="flex flex-col w-[320px]">
+              <span className="text-sm">Введіть кількість необхідних користувачів</span>
+              <Input name="users" value={quantity.users} onChange={handleChange} />
+            </label>
+            <label className="flex flex-col w-[320px] relative">
+              <span className="text-sm">Введіть пароль від аккаунтів</span>
+
+              <Input
+                type={isVisible ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <Button
+                type="button"
+                className="absolute right-0 top-5.5 "
+                onClick={() => setVisible((prev) => !prev)}
+                size="icon-sm"
+                variant="link"
+              >
+                {!isVisible ? <Eye /> : <EyeClosed />}
+              </Button>
+            </label>
+          </div>
+          <Button
+            disabled={createUserMutation.isPending}
+            className="mt-3 w-full"
+            onClick={() => createUserMutation.mutate()}
+          >
+            {createUserMutation.isPending ? (
+              <span className="flex items-center">
+                <Spinner /> Згенерувати
+              </span>
+            ) : (
+              <span>Згенерувати</span>
+            )}
           </Button>
         </div>
       </div>

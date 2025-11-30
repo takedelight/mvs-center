@@ -1,5 +1,14 @@
 import { api } from '@/shared/api';
-import { Input, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
+import {
+  Button,
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -87,8 +96,8 @@ export const AllUsersPage = () => {
         </div>
       </div>
 
-      <div className="mt-3 border flex p-2 flex-col h-[700px]">
-        <div className="flex-1 overflow-auto ">
+      <div className="mt-3 border flex flex-col p-2 h-[620px] justify-between">
+        <div className="flex-1 overflow-auto">
           <Table className="w-full">
             <TableHeader>
               {table.getHeaderGroups().map((headersGroup) => (
@@ -126,9 +135,29 @@ export const AllUsersPage = () => {
           </Table>
         </div>
 
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="text-muted-foreground flex-1 text-sm">
-            Кількість користувачів {table.getFilteredRowModel().rows.length}
+        <div className="flex items-center border-t justify-between py-4">
+          <span className="text-sm text-muted-foreground">
+            Сторінка {table.getState().pagination.pageIndex + 1} з {table.getPageCount()}
+          </span>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Попередня
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Наступна
+            </Button>
           </div>
         </div>
       </div>
