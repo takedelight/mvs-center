@@ -2,7 +2,7 @@ import { api } from '@/shared/api';
 import { Button, Input } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { useState, type ChangeEvent } from 'react';
+import { lazy, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
@@ -13,7 +13,7 @@ interface UserInfo {
   password?: string;
 }
 
-export const ProfilePage = () => {
+const ProfilePage = () => {
   const { refetch, user } = useOutletContext<{
     user: User;
     refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<User, Error>>;
@@ -113,3 +113,5 @@ export const ProfilePage = () => {
     </>
   );
 };
+
+export const LazyProfilePage = lazy(() => Promise.resolve({ default: ProfilePage }));

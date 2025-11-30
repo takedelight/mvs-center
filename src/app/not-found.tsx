@@ -1,8 +1,9 @@
 import { cn } from '@/shared/lib/utils';
 import { buttonVariants } from '@/shared/ui';
+import { lazy } from 'react';
 import { Link } from 'react-router';
 
-export const NotFoundPage = () => {
+const NotFoundPage = () => {
   return (
     <section className="container flex h-[88vh] flex-col justify-center items-center mx-auto px-1 ">
       <span className="text-5xl">404</span>
@@ -14,3 +15,5 @@ export const NotFoundPage = () => {
     </section>
   );
 };
+
+export const LazyNotFoundPage = lazy(() => Promise.resolve({ default: NotFoundPage }));
