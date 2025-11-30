@@ -1,9 +1,9 @@
 import type { User } from '@/widgets/header/ui/header';
-import { Ban, ClipboardList, Users } from 'lucide-react';
+import { Ban, ClipboardList, Settings, Users } from 'lucide-react';
 import { Link, Outlet, useOutletContext } from 'react-router';
 
 export const AdminLayout = () => {
-  const { user } = useOutletContext<{ user: User }>();
+  const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
   if (user?.role === 'user') {
     return (
@@ -38,10 +38,18 @@ export const AdminLayout = () => {
               <ClipboardList /> Всі заявки
             </Link>
           </li>
+          <li>
+            <Link
+              className="transition-colors p-2 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
+              to="/admin/settings"
+            >
+              <Settings /> Налаштування
+            </Link>
+          </li>
         </ul>
       </aside>
       <div className="col-start-2 p-2  col-end-7">
-        <Outlet />
+        <Outlet context={[user, refetch]} />
       </div>
     </section>
   );

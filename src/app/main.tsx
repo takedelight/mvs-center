@@ -39,6 +39,10 @@ const LazyAllStatementsPage = lazy(() =>
   import('@/pages/Admin').then((module) => ({ default: module.AllStatementsPage })),
 );
 
+const LazyAdminSettingsPage = lazy(() =>
+  import('@/pages/Admin').then((module) => ({ default: module.SettingsPage })),
+);
+
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <StrictMode>
@@ -59,6 +63,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/admin" element={<AdminLayout />}>
                 <Route path="users" element={<LazyAllUsersPage />} />
                 <Route path="statements" element={<LazyAllStatementsPage />} />
+                <Route path="settings" element={<LazyAdminSettingsPage />} />
               </Route>
 
               <Route path="*" element={<LazyNotFoundPage />} />

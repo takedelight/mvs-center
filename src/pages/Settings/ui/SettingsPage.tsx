@@ -41,7 +41,7 @@ export const SettingsPage = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await api.delete('/user/delete');
+      await api.delete('/user/delete');
       localStorage.removeItem('access_token');
       navigate('/');
       toast.success('Ваш акаунт видалено.');
@@ -82,7 +82,7 @@ export const SettingsPage = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Ви впевненні,   що хочете видалити акаунт?</DialogTitle>
+                <DialogTitle>Ви впевненні, що хочете видалити акаунт?</DialogTitle>
               </DialogHeader>
 
               <div className="flex justify-end items-center gap-1">
