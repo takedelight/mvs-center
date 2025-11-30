@@ -94,7 +94,7 @@ export const ProfileLayout = () => {
           <Button
             onClick={handleLogout}
             variant="ghost"
-            className="w-full text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
+            className="w-full text-lg text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
           >
             <LogOut /> Вийти
           </Button>

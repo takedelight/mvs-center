@@ -1,11 +1,23 @@
 import { api } from '@/shared/api';
-import { Button, Input } from '@/shared/ui';
+import {
+  Button,
+  DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Input,
+} from '@/shared/ui';
 import { isAxiosError } from 'axios';
 import { useState, type ChangeEvent } from 'react';
+import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SettingsPage = () => {
   const [quantity, setQuantity] = useState(10);
+  const [isOpen, setOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -27,6 +39,19 @@ export const SettingsPage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await api.delete('/user/delete');
+      localStorage.removeItem('access_token');
+      navigate('/');
+      toast.success('Ваш акаунт видалено.');
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.message);
+      }
+    }
+  };
+
   return (
     <>
       <h1 className="font-semibold text-2xl mt-3">Налаштування</h1>
@@ -41,6 +66,33 @@ export const SettingsPage = () => {
           </label>
 
           <Button onClick={handleGenerate}>Згенерувати</Button>
+        </div>
+      </div>
+
+      <div className="mt-5 border p-2 rounded-md">
+        <h2 className="font-semibold">Видалити акаунт</h2>
+
+        <div className="flex mt-2 gap-2 ">
+          <Dialog open={isOpen} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <div>
+                <Button variant="destructive">Видалити</Button>
+                <span>ПРОТЕСТУВАТИ</span>
+              </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ви впевненні,   що хочете видалити акаунт?</DialogTitle>
+              </DialogHeader>
+
+              <div className="flex justify-end items-center gap-1">
+                <Button variant="ghost">Відмінити</Button>
+                <Button onClick={handleDelete} variant="destructive">
+                  Видалити
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </>

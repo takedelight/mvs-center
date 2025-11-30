@@ -77,6 +77,8 @@ export const AllUsersPage = () => {
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Пошук за email, ПІБ або id"
           />
+
+          <span>ДОРОБИТИ</span>
         </label>
 
         <div className="flex items-center gap-2 ">
