@@ -8,14 +8,19 @@ import {
   DialogTitle,
   Input,
 } from '@/shared/ui';
+import type { User } from '@/widgets/header/ui/header';
 import { isAxiosError } from 'axios';
 import { useState, type ChangeEvent } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SettingsPage = () => {
   const [quantity, setQuantity] = useState(10);
   const [isOpen, setOpen] = useState(false);
+
+  const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
+
+  console.log(' @@user', user);
 
   const navigate = useNavigate();
 
@@ -29,9 +34,11 @@ export const SettingsPage = () => {
 
   const handleGenerate = async () => {
     try {
-      await api.post(`/ticket/generate/${quantity}}`);
+      await api.post(`/ticket/generate/${user.id}/${quantity}`);
 
       toast.success('Заяви успішно згенеровано');
+
+      refetch();
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.message);
@@ -45,6 +52,7 @@ export const SettingsPage = () => {
       localStorage.removeItem('access_token');
       navigate('/');
       toast.success('Ваш акаунт видалено.');
+      refetch();
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.message);
@@ -75,10 +83,7 @@ export const SettingsPage = () => {
         <div className="flex mt-2 gap-2 ">
           <Dialog open={isOpen} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <div>
-                <Button variant="destructive">Видалити</Button>
-                <span>ПРОТЕСТУВАТИ</span>
-              </div>
+              <Button variant="destructive">Видалити</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

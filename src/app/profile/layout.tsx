@@ -102,7 +102,7 @@ export const ProfileLayout = () => {
 
         <div className="col-start-2 p-2   col-end-5 ">
           <div className="  mx-auto">
-            <Outlet context={{ user, refetch }} />
+            <Outlet context={[user, refetch]} />
           </div>
         </div>
       </div>
