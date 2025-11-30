@@ -4,11 +4,11 @@ import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Eye, EyeClosed } from 'lucide-react';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { lazy, useEffect, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
-export const SettingsPage = () => {
+const AdminSettingsPage = () => {
   const [id, setId] = useState('');
   const [quantity, setQuantity] = useState({
     tickets: 10,
@@ -145,4 +145,6 @@ export const SettingsPage = () => {
     </>
   );
 };
+
+export const LazyAdminSettingsPage = lazy(() => Promise.resolve({ default: AdminSettingsPage }));
 

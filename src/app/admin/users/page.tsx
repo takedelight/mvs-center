@@ -22,12 +22,12 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { useEffect, useMemo, useState } from 'react';
-import { getUserColumns } from './UserCells';
-import { EditUserDialog } from './EditUserDialog';
+import { lazy, useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
-import { CreateUserDialog } from './CreateUserDialog';
-import { DeleteButton } from './DeleteButton';
+import { getUserColumns } from '@/pages/Admin/ui/UserCells';
+import { CreateUserDialog } from '@/pages/Admin/ui/CreateUserDialog';
+import { DeleteButton } from '@/pages/Admin/ui/DeleteButton';
+import { EditUserDialog } from '@/pages/Admin/ui/EditUserDialog';
 
 export const AllUsersPage = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -166,4 +166,6 @@ export const AllUsersPage = () => {
     </>
   );
 };
+
+export const LazyAdminUsersPage = lazy(() => Promise.resolve({ default: AllUsersPage }));
 

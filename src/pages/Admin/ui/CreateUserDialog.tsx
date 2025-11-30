@@ -15,7 +15,6 @@ import {
   Spinner,
 } from '@/shared/ui';
 
-import {} from '@radix-ui/react-dialog';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Plus } from 'lucide-react';
@@ -79,7 +78,9 @@ export const CreateUserDialog = ({ refetch }: Props) => {
 
       <DialogContent className="max-w-[480px] p-6 space-y-6">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Створення користувача</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">
+            Створення користувача <span>ADD VALIDATION</span>
+          </DialogTitle>
         </DialogHeader>
 
         <form className="grid grid-cols-2 gap-4">

@@ -10,11 +10,11 @@ import {
 } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import { isAxiosError } from 'axios';
-import { useState, type ChangeEvent } from 'react';
+import { lazy, useState, type ChangeEvent } from 'react';
 import { useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
-export const SettingsPage = () => {
+const SettingsPage = () => {
   const [quantity, setQuantity] = useState(10);
   const [isOpen, setOpen] = useState(false);
 
@@ -103,4 +103,6 @@ export const SettingsPage = () => {
     </>
   );
 };
+
+export const LazyProfileSettings = lazy(() => Promise.resolve({ default: SettingsPage }));
 
