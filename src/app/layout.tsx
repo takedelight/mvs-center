@@ -15,7 +15,7 @@ export const RootLayout = () => {
 
   return (
     <div className="flex flex-col h-screen antialiased">
-      <Header />
+      <Header data={data} />
 
       <Suspense
         fallback={

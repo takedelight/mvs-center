@@ -1,6 +1,8 @@
 import { api } from '@/shared/api';
-import { Button, Input } from '@/shared/ui';
+import { Button, Input, Spinner } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
+import { useMutation } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { lazy, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
@@ -24,6 +26,28 @@ const ProfilePage = () => {
     password: '',
   }));
 
+  const updateProfileInfoMutation = useMutation({
+    mutationKey: ['profile'],
+    mutationFn: async () => {
+      const payload = { ...userInfo };
+
+      if (!payload.password) {
+        delete payload.password;
+      }
+
+      const response = await api.patch('/user/update', payload);
+
+      toast.success(response.data.message);
+
+      refetch();
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        toast.error(error.message);
+      }
+    },
+  });
+
   if (!user) return null;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,20 +56,6 @@ const ProfilePage = () => {
     } = e;
 
     setUserInfo((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleUpdate = async () => {
-    const payload = { ...userInfo };
-
-    if (!payload.password) {
-      delete payload.password;
-    }
-
-    const response = await api.patch('/user/update', payload);
-
-    toast.success(response.data.message);
-
-    refetch();
   };
 
   return (
@@ -95,7 +105,7 @@ const ProfilePage = () => {
           </div>
         </form>
         <Button
-          onClick={handleUpdate}
+          onClick={() => updateProfileInfoMutation.mutate()}
           disabled={
             userInfo.email === user.email &&
             userInfo.firstName === user.firstName &&
@@ -103,7 +113,13 @@ const ProfilePage = () => {
           }
           className="mt-4"
         >
-          Зберегти зміни
+          {updateProfileInfoMutation.isPending ? (
+            <span className="flex gap-2 items-center">
+              <Spinner /> Оновлення
+            </span>
+          ) : (
+            <span>Зберегти зміни</span>
+          )}
         </Button>
       </div>
     </>

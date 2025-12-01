@@ -2,8 +2,6 @@ import { Link, NavLink } from 'react-router';
 import { User, UserRound } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Avatar, AvatarFallback, buttonVariants } from '@/shared/ui';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/shared/api';
 
 export interface User {
   id: string;
@@ -15,13 +13,11 @@ export interface User {
   updatedAt: Date;
 }
 
-export const Header = () => {
-  const { data } = useQuery<User>({
-    queryKey: ['profile'],
-    refetchOnWindowFocus: false,
-    queryFn: () => api.get('/profile').then((res) => res.data),
-  });
+interface Props {
+  data?: User;
+}
 
+export const Header = ({ data }: Props) => {
   return (
     <header className="shadow-sm py-4">
       <nav className="container flex items-center justify-between mx-auto px-1">
