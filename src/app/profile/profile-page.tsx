@@ -1,7 +1,6 @@
 import { api } from '@/shared/api';
 import { Button, Input } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
-import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { lazy, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
@@ -14,10 +13,7 @@ interface UserInfo {
 }
 
 const ProfilePage = () => {
-  const { refetch, user } = useOutletContext<{
-    user: User;
-    refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<User, Error>>;
-  }>();
+  const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
   console.log(user);
 
