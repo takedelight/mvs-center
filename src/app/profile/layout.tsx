@@ -1,9 +1,9 @@
 import { api } from '@/shared/api';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { Avatar, AvatarFallback, Button } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
-import { useEffect } from 'react';
 import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
@@ -11,8 +11,9 @@ export const ProfileLayout = () => {
   const [user, refetch] = useOutletContext<[User | undefined, () => void]>();
 
   const navigate = useNavigate();
+  const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
 
-  const token = localStorage.getItem('access_token');
+  const { value, deleteValue } = useLocalStorage('access_token', '');
 
   const logoutMutation = useMutation({
     mutationKey: ['logout'],
@@ -20,21 +21,16 @@ export const ProfileLayout = () => {
       await api.post('auth/logout', {}, { withCredentials: true });
     },
     onSuccess: () => {
-      localStorage.removeItem('access_token');
+      deleteValue();
 
       toast.success('Ви вийшли зі свого облікового запису.');
 
       navigate('/');
+      refresh();
     },
   });
 
-  useEffect(() => {
-    if (!token) {
-      navigate('/signin', { replace: true });
-    }
-  }, [token, navigate]);
-
-  if (!token) return null;
+  if (!value) return null;
 
   return (
     <section className="container h-[85vh] mt-5 mx-auto px-1">

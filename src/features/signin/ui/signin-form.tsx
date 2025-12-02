@@ -1,4 +1,5 @@
 import { api } from '@/shared/api';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { cn } from '@/shared/lib/utils';
 import {
   Button,
@@ -8,10 +9,12 @@ import {
   CardHeader,
   CardTitle,
   Input,
+  Spinner,
 } from '@/shared/ui';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState, type ChangeEvent } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SignInForm = () => {
@@ -19,6 +22,11 @@ export const SignInForm = () => {
     email: '',
     password: '',
   });
+
+  const { setValue } = useLocalStorage('access_token', '');
+  const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
+
+  console.log(refresh);
 
   const navigate = useNavigate();
 
@@ -30,16 +38,20 @@ export const SignInForm = () => {
     setInputValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = async () => {
-    try {
+  const loginMutation = useMutation({
+    mutationKey: ['login'],
+    mutationFn: async () => {
       const response = await api.post('auth/login', { ...inputValues });
-
-      localStorage.setItem('access_token', response.data.access_token);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setValue(data.access_token);
 
       toast.success('Ви увійшли у свій профіль!');
-
+      refresh();
       navigate('/');
-    } catch (error) {
+    },
+    onError: (error) => {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data.message;
 
@@ -51,8 +63,8 @@ export const SignInForm = () => {
           toast.error(errorMessage);
         }
       }
-    }
-  };
+    },
+  });
 
   return (
     <Card className="w-[500px]">
@@ -90,8 +102,18 @@ export const SignInForm = () => {
           />
         </div>
 
-        <Button onClick={handleLogin} className="uppercase tracking-wide">
-          Увійти
+        <Button
+          disabled={loginMutation.isPending}
+          onClick={() => loginMutation.mutate()}
+          className="uppercase tracking-wide"
+        >
+          {loginMutation.isPending ? (
+            <span className="flex gap-1 items-center">
+              <Spinner /> Увійти
+            </span>
+          ) : (
+            <span>Увійти</span>
+          )}
         </Button>
       </CardContent>
     </Card>

@@ -1,4 +1,5 @@
 import { api } from '@/shared/api';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
 import type { User } from '@/widgets/header/ui/header';
@@ -7,10 +8,14 @@ import { Suspense } from 'react';
 import { Outlet } from 'react-router';
 
 export const RootLayout = () => {
+  const { value } = useLocalStorage('access_token', '');
+
   const { data, refetch } = useQuery<User>({
     queryKey: ['profile'],
     refetchOnWindowFocus: false,
-    queryFn: () => api.get('/profile').then((res) => res.data),
+    queryFn: async () => await api.get('/profile').then((data) => data.data),
+    enabled: !!value,
+    retry: false,
   });
 
   return (

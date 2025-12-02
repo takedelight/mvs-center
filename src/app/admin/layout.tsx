@@ -5,7 +5,7 @@ import { Link, Outlet, useOutletContext } from 'react-router';
 export const AdminLayout = () => {
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
-  if (user?.role === 'user') {
+  if (user?.role === 'user' || !user) {
     return (
       <div className="h-[88vh] flex justify-center items-center">
         <span className="flex items-center flex-col">
