@@ -24,7 +24,7 @@ import {
 } from '@tanstack/react-table';
 import { lazy, useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
-import { getUserColumns } from '@/pages/Admin/ui/UserCells';
+import { UserColumns } from '@/pages/Admin/ui/UserCells';
 import { CreateUserDialog } from '@/pages/Admin/ui/CreateUserDialog';
 import { DeleteButton } from '@/pages/Admin/ui/DeleteButton';
 import { EditUserDialog } from '@/pages/Admin/ui/EditUserDialog';
@@ -44,9 +44,7 @@ export const AllUsersPage = () => {
     queryFn: () => api.get('/user').then((data) => data.data),
   });
 
-  console.log(selectedIds);
-
-  const columns = useMemo(() => getUserColumns({ refetch, setEditingUser }), []);
+  const columns = useMemo(() => UserColumns({ refetch, setEditingUser }), []);
 
   const table = useReactTable({
     data,
@@ -66,6 +64,12 @@ export const AllUsersPage = () => {
       rowSelection,
     },
   });
+
+  const handleLogSelected = () => {
+    const selectedUsers = table.getSelectedRowModel().flatRows.map((row) => row.original);
+
+    console.log('Всі вибрані юзери:', selectedUsers);
+  };
 
   useEffect(() => {
     const selected = table.getSelectedRowModel().rows.map((r) => r.original.id);
@@ -161,6 +165,8 @@ export const AllUsersPage = () => {
           </div>
         </div>
       </div>
+
+      <Button onClick={handleLogSelected}></Button>
 
       <EditUserDialog editingUser={editingUser} setEditingUser={setEditingUser} refetch={refetch} />
     </>

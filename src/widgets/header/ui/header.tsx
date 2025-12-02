@@ -28,8 +28,6 @@ export const Header = ({ data }: Props) => {
     return `${first}${last}`;
   };
 
-  console.log(data);
-
   const initials = getInitials();
 
   return (

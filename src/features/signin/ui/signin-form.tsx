@@ -26,8 +26,6 @@ export const SignInForm = () => {
   const { setValue } = useLocalStorage('access_token', '');
   const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
 
-  console.log(refresh);
-
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

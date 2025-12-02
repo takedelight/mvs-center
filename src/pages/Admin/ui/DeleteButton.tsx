@@ -19,7 +19,6 @@ export const DeleteButton = ({ ids, refetch }: Props) => {
       refetch();
       toast.success('Користувачів успішно видалено.');
     },
-    
   });
 
   return (

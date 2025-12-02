@@ -20,8 +20,6 @@ const SettingsPage = () => {
 
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
-  console.log(' @@user', user);
-
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

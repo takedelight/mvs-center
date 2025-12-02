@@ -17,8 +17,6 @@ interface UserInfo {
 const ProfilePage = () => {
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
-  console.log(user);
-
   const [userInfo, setUserInfo] = useState<UserInfo>(() => ({
     email: user?.email ?? '',
     firstName: user?.firstName ?? '',

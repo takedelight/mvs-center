@@ -25,8 +25,6 @@ const AdminSettingsPage = () => {
     }
   }, [user]);
 
-  console.log(user);
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
 
