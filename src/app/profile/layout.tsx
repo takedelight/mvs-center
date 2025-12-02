@@ -1,5 +1,7 @@
+import { api } from '@/shared/api';
 import { Avatar, AvatarFallback, Button } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
+import { useMutation } from '@tanstack/react-query';
 import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
@@ -12,18 +14,19 @@ export const ProfileLayout = () => {
 
   const token = localStorage.getItem('access_token');
 
-  const handleLogout = () => {
-    fetch(`${import.meta.env.VITE_PUBLIC_API_URL}}/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+  const logoutMutation = useMutation({
+    mutationKey: ['logout'],
+    mutationFn: async () => {
+      await api.post('auth/logout', {}, { withCredentials: true });
+    },
+    onSuccess: () => {
+      localStorage.removeItem('access_token');
 
-    localStorage.removeItem('access_token');
+      toast.success('Ви вийшли зі свого облікового запису.');
 
-    toast.success('Ви вийшли зі свого облікового запису.');
-
-    navigate('/');
-  };
+      navigate('/');
+    },
+  });
 
   useEffect(() => {
     if (!token) {
@@ -92,7 +95,7 @@ export const ProfileLayout = () => {
           </ul>
 
           <Button
-            onClick={handleLogout}
+            onClick={() => logoutMutation.mutate()}
             variant="ghost"
             className="w-full text-lg text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
           >
