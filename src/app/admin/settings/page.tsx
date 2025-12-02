@@ -1,5 +1,5 @@
 import { api } from '@/shared/api';
-import { Button, Input, Spinner } from '@/shared/ui';
+import { Button, Dialog, DialogTrigger, Input, Spinner } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
@@ -7,6 +7,7 @@ import { Eye, EyeClosed } from 'lucide-react';
 import { lazy, useEffect, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
+import { DeleteUsersDialog } from '@/features/delete-all-users';
 
 const AdminSettingsPage = () => {
   const [id, setId] = useState('');
@@ -138,6 +139,26 @@ const AdminSettingsPage = () => {
               <span>Згенерувати</span>
             )}
           </Button>
+        </div>
+      </div>
+
+      <div className="mt-5 border rounded-md">
+        <div className="w-[340px]  p-2 ">
+          <h2 className="font-semibold">Видалити всіх користувачів</h2>
+          <DeleteUsersDialog refetch={refetch} />
+        </div>
+      </div>
+
+      <div className="mt-5 border rounded-md">
+        <div className="w-[340px]  p-2 ">
+          <h2 className="font-semibold">Видалити всіх заяви</h2>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="mt-2">
+                Видалити
+              </Button>
+            </DialogTrigger>
+          </Dialog>
         </div>
       </div>
     </>

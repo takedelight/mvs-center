@@ -89,7 +89,9 @@ const SettingsPage = () => {
               </DialogHeader>
 
               <div className="flex justify-end items-center gap-1">
-                <Button variant="ghost">Відмінити</Button>
+                <Button onClick={() => setOpen(false)} variant="ghost">
+                  Відмінити
+                </Button>
                 <Button onClick={handleDelete} variant="destructive">
                   Видалити
                 </Button>

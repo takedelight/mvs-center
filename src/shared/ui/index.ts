@@ -10,3 +10,4 @@ export * from './dropdown-menu';
 export * from './dialog';
 export * from './select';
 export * from './separator';
+export * from './confirm-dialog';

@@ -66,13 +66,14 @@ export const AllUsersPage = () => {
   });
 
   const handleLogSelected = () => {
-    const selectedUsers = table.getSelectedRowModel().flatRows.map((row) => row.original);
+    const selectedUsers = table.getSelectedRowModel().flatRows.map((row) => row.original.id);
 
     console.log('Всі вибрані юзери:', selectedUsers);
   };
 
   useEffect(() => {
     const selected = table.getSelectedRowModel().rows.map((r) => r.original.id);
+    console.log('Всі вибрані юзери(effect):', selected);
     setSelectedIds(selected);
   }, [table, rowSelection]);
 
