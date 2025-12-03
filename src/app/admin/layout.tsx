@@ -24,7 +24,7 @@ export const AdminLayout = () => {
         <ul>
           <li>
             <Link
-              className="transition-colors p-2 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
+              className="transition-colors p-4 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
               to="/admin/users"
             >
               <Users /> Всі користувачі
@@ -32,7 +32,7 @@ export const AdminLayout = () => {
           </li>
           <li>
             <Link
-              className="transition-colors p-2 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
+              className="transition-colors p-4 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
               to="/admin/statements"
             >
               <ClipboardList /> Всі заявки
@@ -40,7 +40,7 @@ export const AdminLayout = () => {
           </li>
           <li>
             <Link
-              className="transition-colors p-2 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
+              className="transition-colors p-4 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
               to="/admin/settings"
             >
               <Settings /> Налаштування

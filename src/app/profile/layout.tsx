@@ -66,7 +66,7 @@ export const ProfileLayout = () => {
           <ul>
             <li>
               <Link
-                className="transition-colors p-2 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
+                className="transition-colors p-4 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
                 to="/profile"
               >
                 <UserRoundPen /> Профіль
@@ -75,7 +75,7 @@ export const ProfileLayout = () => {
 
             <li>
               <Link
-                className="transition-colors p-2 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
+                className="transition-colors p-4 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
                 to="/profile/statements"
               >
                 <Mail /> Мої заявки
@@ -83,7 +83,7 @@ export const ProfileLayout = () => {
             </li>
             <li>
               <Link
-                className="transition-colors p-2 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
+                className="transition-colors p-4 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
                 to="/profile/settings"
               >
                 <Settings /> Налаштування
@@ -94,7 +94,7 @@ export const ProfileLayout = () => {
           <Button
             onClick={() => logoutMutation.mutate()}
             variant="ghost"
-            className="w-full text-lg text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
+            className="w-full text-lg  text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
           >
             <LogOut /> Вийти
           </Button>
