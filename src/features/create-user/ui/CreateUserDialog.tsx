@@ -198,4 +198,3 @@ export const CreateUserDialog = ({ refetch }: Props) => {
     </Dialog>
   );
 };
-

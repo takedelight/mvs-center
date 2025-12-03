@@ -5,4 +5,3 @@ const AllStatementsPage = () => {
 };
 
 export const LazyAdminStatementsPage = lazy(() => Promise.resolve({ default: AllStatementsPage }));
-

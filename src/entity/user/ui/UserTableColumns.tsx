@@ -117,4 +117,3 @@ export const UserTableColumns = ({ refetch, setEditingUser }: Props): ColumnDef<
     },
   ];
 };
-

@@ -3,7 +3,7 @@ import { LazyHomePage } from '../page';
 import { RootLayout } from '../layout';
 import { LazyLoginPage } from '../login/LoginPage';
 import { ProfileLayout } from '../profile/layout';
-import { LazyProfilePage } from '../profile/profile-page';
+import { LazyProfilePage } from '../profile/page';
 import { LazyProfileSettings } from '../profile/settings/page';
 import { AdminLayout } from '../admin/layout';
 import { LazyAdminUsersPage } from '../admin/users/page';
@@ -39,4 +39,3 @@ export const RouteProvider = () => {
     </BrowserRouter>
   );
 };
-

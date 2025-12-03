@@ -130,4 +130,3 @@ const AllUserStatementsPage = () => {
 export const LazyAllUserStatementsPage = lazy(() =>
   Promise.resolve({ default: AllUserStatementsPage }),
 );
-

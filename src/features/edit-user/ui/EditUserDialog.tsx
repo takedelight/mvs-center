@@ -189,4 +189,3 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
     </Dialog>
   );
 };
-

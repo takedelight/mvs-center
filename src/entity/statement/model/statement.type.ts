@@ -5,4 +5,3 @@ export interface Statement {
   completedAt?: string;
   createdAt: string;
 }
-

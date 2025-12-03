@@ -8,21 +8,21 @@ import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 interface UserInfo {
-  email: string;
-  firstName: string;
-  lastName: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
   password?: string;
 }
 
 const ProfilePage = () => {
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
-  const [userInfo, setUserInfo] = useState<UserInfo>(() => ({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user?.email ?? '',
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
     password: '',
-  }));
+  });
 
   const updateProfileInfoMutation = useMutation({
     mutationKey: ['profile'],
@@ -33,7 +33,7 @@ const ProfilePage = () => {
         delete payload.password;
       }
 
-      const response = await api.patch('/user/update', payload);
+      const response = await api.patch(`/user/update/${user.id}`, payload);
 
       toast.success(response.data.message);
 
@@ -105,15 +105,16 @@ const ProfilePage = () => {
         <Button
           onClick={() => updateProfileInfoMutation.mutate()}
           disabled={
-            userInfo.email === user.email &&
-            userInfo.firstName === user.firstName &&
-            userInfo.lastName === user.lastName
+            (userInfo.email === user.email &&
+              userInfo.firstName === user.firstName &&
+              userInfo.lastName === user.lastName) ||
+            updateProfileInfoMutation.isPending
           }
           className="mt-4"
         >
           {updateProfileInfoMutation.isPending ? (
             <span className="flex gap-2 items-center">
-              <Spinner /> Оновлення
+              <Spinner /> Збереження
             </span>
           ) : (
             <span>Зберегти зміни</span>

@@ -79,4 +79,3 @@ export const ConfirmDialog = (props: Props) => {
     </Dialog>
   );
 };
-

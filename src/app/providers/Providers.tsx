@@ -10,4 +10,3 @@ export const Providers = () => {
     </ErrorBoundary>
   );
 };
-

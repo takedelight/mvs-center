@@ -103,4 +103,3 @@ const SettingsPage = () => {
 };
 
 export const LazyProfileSettings = lazy(() => Promise.resolve({ default: SettingsPage }));
-

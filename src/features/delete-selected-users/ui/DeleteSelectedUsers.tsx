@@ -32,4 +32,3 @@ export const DeleteSelectedUsers = ({ ids, refetch }: Props) => {
     </Button>
   );
 };
-
