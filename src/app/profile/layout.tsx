@@ -1,7 +1,7 @@
+import type { User } from '@/entity/user';
 import { api } from '@/shared/api';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { Avatar, AvatarFallback, Button } from '@/shared/ui';
-import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';

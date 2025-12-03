@@ -4,12 +4,13 @@ import { RootLayout } from '../layout';
 import { LazyLoginPage } from '../login/LoginPage';
 import { ProfileLayout } from '../profile/layout';
 import { LazyProfilePage } from '../profile/profile-page';
-import { LazyProfileSettings } from '../profile/settings/SettingsPage';
+import { LazyProfileSettings } from '../profile/settings/page';
 import { AdminLayout } from '../admin/layout';
 import { LazyAdminUsersPage } from '../admin/users/page';
 import { LazyAdminStatementsPage } from '../admin/statements/page';
 import { LazyAdminSettingsPage } from '../admin/settings/page';
 import { LazyNotFoundPage } from '../not-found';
+import { LazyAllUserStatementsPage } from '../profile/statements/page';
 
 export const RouteProvider = () => {
   return (
@@ -23,6 +24,7 @@ export const RouteProvider = () => {
           <Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<LazyProfilePage />} />
             <Route path="settings" element={<LazyProfileSettings />} />
+            <Route path="statements" element={<LazyAllUserStatementsPage />} />
           </Route>
 
           <Route path="/admin" element={<AdminLayout />}>

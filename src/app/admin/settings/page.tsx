@@ -1,6 +1,5 @@
 import { api } from '@/shared/api';
 import { Button, Dialog, DialogTrigger, Input, Spinner } from '@/shared/ui';
-import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Eye, EyeClosed } from 'lucide-react';
@@ -8,6 +7,7 @@ import { lazy, useEffect, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 import { DeleteUsersDialog } from '@/features/delete-all-users';
+import type { User } from '@/entity/user';
 
 const AdminSettingsPage = () => {
   const [id, setId] = useState('');

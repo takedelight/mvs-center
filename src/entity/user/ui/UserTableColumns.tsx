@@ -1,5 +1,4 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import type { User } from '@/widgets/header/ui/header';
 import {
   Checkbox,
   DropdownMenu,
@@ -14,13 +13,14 @@ import { MoreHorizontal } from 'lucide-react';
 import { api } from '@/shared/api';
 import { toast } from 'react-toastify';
 import type { Dispatch, SetStateAction } from 'react';
+import type { User } from '../model/user.type';
 
 interface Props {
   refetch: () => void;
   setEditingUser: Dispatch<SetStateAction<User | null>>;
 }
 
-export const UserColumns = ({ refetch, setEditingUser }: Props): ColumnDef<User>[] => {
+export const UserTableColumns = ({ refetch, setEditingUser }: Props): ColumnDef<User>[] => {
   return [
     {
       id: 'select',

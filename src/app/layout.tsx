@@ -1,8 +1,8 @@
+import type { User } from '@/entity/user';
 import { api } from '@/shared/api';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
-import type { User } from '@/widgets/header/ui/header';
 import { useQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Outlet } from 'react-router';
@@ -25,7 +25,7 @@ export const RootLayout = () => {
       <Suspense
         fallback={
           <div className="h-screen flex justify-center items-center">
-            <Spinner className='size-7' />
+            <Spinner className="size-7" />
           </div>
         }
       >

@@ -4,16 +4,7 @@ import { cn } from '@/shared/lib/utils';
 import { Avatar, AvatarFallback, buttonVariants } from '@/shared/ui';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { useMemo } from 'react';
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { User } from '@/entity/user';
 
 interface Props {
   data?: User;

@@ -1,4 +1,4 @@
-import type { User } from '@/widgets/header/ui/header';
+import type { User } from '@/entity/user';
 import { Ban, ClipboardList, Settings, Users } from 'lucide-react';
 import { Link, Outlet, useOutletContext } from 'react-router';
 

@@ -1,14 +1,6 @@
+import { StatementTableColumns, type Statement } from '@/entity/statement';
 import { api } from '@/shared/api';
-import {
-  Button,
-  Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui';
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
 import { useQuery } from '@tanstack/react-query';
 import {
   flexRender,
@@ -21,29 +13,21 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { lazy, useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
-import { EditUserDialog } from '@/features/edit-user';
-import { CreateUserDialog } from '@/features/create-user';
-import { DeleteSelectedUsers } from '@/features/delete-selected-users';
-import { UserTableColumns, type User } from '@/entity/user';
+import { lazy, useMemo, useState } from 'react';
 
-export const AllUsersPage = () => {
+const AllUserStatementsPage = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [searchValue, setSearchValue] = useState('');
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const { data = [], refetch } = useQuery<User[]>({
-    queryKey: ['users'],
+  const columns = useMemo(() => StatementTableColumns(), []);
+
+  const { data = [] } = useQuery<Statement[]>({
+    queryKey: ['userStatements'],
     refetchOnWindowFocus: false,
-    queryFn: () => api.get('/user').then((data) => data.data),
+    queryFn: async () => await api.get('/ticket').then((data) => data.data),
   });
-
-  const columns = useMemo(() => UserTableColumns({ refetch, setEditingUser }), []);
 
   const table = useReactTable({
     data,
@@ -52,6 +36,7 @@ export const AllUsersPage = () => {
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -62,38 +47,18 @@ export const AllUsersPage = () => {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 13,
+      },
+    },
   });
-
-  useEffect(() => {
-    const selected = table.getSelectedRowModel().rows.map((r) => r.original.id);
-    setSelectedIds(selected);
-  }, [table, rowSelection]);
 
   return (
     <>
-      <h1 className="font-semibold text-2xl mt-3">Всі користувачі</h1>
+      <h1 className="font-semibold text-2xl mt-3">Заяви</h1>
 
-      <div className="  flex justify-between items-center  ">
-        <label className="flex border rounded-md px-2 w-[300px] items-center" htmlFor="search-user">
-          <Search />
-          <Input
-            id="search-user"
-            className="border-0 outline-0 focus-visible:ring-0"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Пошук за email, ПІБ або id"
-          />
-
-          <span>ДОРОБИТИ</span>
-        </label>
-
-        <div className="flex items-center gap-2 ">
-          <CreateUserDialog refetch={refetch} />
-          <DeleteSelectedUsers refetch={refetch} ids={selectedIds} />
-        </div>
-      </div>
-
-      <div className="mt-3 border flex flex-col p-2 h-[750px] justify-between">
+      <div className="mt-3 border flex flex-col p-2 h-[620px] justify-between">
         <div className="flex-1 overflow-auto">
           <Table className="w-full">
             <TableHeader>
@@ -158,11 +123,11 @@ export const AllUsersPage = () => {
           </div>
         </div>
       </div>
-
-      <EditUserDialog editingUser={editingUser} setEditingUser={setEditingUser} refetch={refetch} />
     </>
   );
 };
 
-export const LazyAdminUsersPage = lazy(() => Promise.resolve({ default: AllUsersPage }));
+export const LazyAllUserStatementsPage = lazy(() =>
+  Promise.resolve({ default: AllUserStatementsPage }),
+);
 

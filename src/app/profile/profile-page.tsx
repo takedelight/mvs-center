@@ -1,6 +1,6 @@
+import type { User } from '@/entity/user';
 import { api } from '@/shared/api';
 import { Button, Input, Spinner } from '@/shared/ui';
-import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { lazy, useState, type ChangeEvent } from 'react';

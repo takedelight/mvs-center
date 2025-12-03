@@ -1,3 +1,4 @@
+import type { User } from '@/entity/user';
 import { api } from '@/shared/api';
 import {
   Button,
@@ -13,7 +14,6 @@ import {
   Dialog,
   Spinner,
 } from '@/shared/ui';
-import type { User } from '@/widgets/header/ui/header';
 import {} from '@radix-ui/react-dialog';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
