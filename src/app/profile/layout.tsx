@@ -4,16 +4,15 @@ import { Avatar, AvatarFallback, Button } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import { useMutation } from '@tanstack/react-query';
 import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
+import { useEffect } from 'react';
 import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const ProfileLayout = () => {
-  const [user, refetch] = useOutletContext<[User | undefined, () => void]>();
+  const [user, refetch] = useOutletContext<[User, () => void]>();
+  const { value, deleteValue } = useLocalStorage('access_token', '');
 
   const navigate = useNavigate();
-  const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
-
-  const { value, deleteValue } = useLocalStorage('access_token', '');
 
   const logoutMutation = useMutation({
     mutationKey: ['logout'],
@@ -26,11 +25,13 @@ export const ProfileLayout = () => {
       toast.success('Ви вийшли зі свого облікового запису.');
 
       navigate('/');
-      refresh();
+      refetch();
     },
   });
 
-  if (!value) return null;
+  useEffect(() => {
+    if (!value || !user) navigate('/signin');
+  }, [value, user]);
 
   return (
     <section className="container h-[85vh] mt-5 mx-auto px-1">

@@ -25,7 +25,7 @@ export const RootLayout = () => {
       <Suspense
         fallback={
           <div className="h-screen flex justify-center items-center">
-            <Spinner />
+            <Spinner className='size-7' />
           </div>
         }
       >

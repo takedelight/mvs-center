@@ -3,6 +3,7 @@ import { UserRound } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Avatar, AvatarFallback, buttonVariants } from '@/shared/ui';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
+import { useMemo } from 'react';
 
 export interface User {
   id: string;
@@ -21,14 +22,12 @@ interface Props {
 export const Header = ({ data }: Props) => {
   const { value } = useLocalStorage('access_token', '');
 
-  const getInitials = () => {
+  const initials = useMemo(() => {
     if (!data) return null;
     const first = data.firstName?.[0]?.toUpperCase() ?? '';
     const last = data.lastName?.[0]?.toUpperCase() ?? '';
     return `${first}${last}`;
-  };
-
-  const initials = getInitials();
+  }, [data]);
 
   return (
     <header className="shadow-sm py-4">
@@ -55,7 +54,7 @@ export const Header = ({ data }: Props) => {
           </li>
 
           <li>
-            {!value ? (
+            {!data || !value ? (
               <Link className={cn(buttonVariants({ variant: 'ghost' }))} to="/signin">
                 <UserRound className="size-5" />
                 Увійти
