@@ -11,9 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
   Dialog,
+  Spinner,
 } from '@/shared/ui';
 import type { User } from '@/widgets/header/ui/header';
 import {} from '@radix-ui/react-dialog';
+import { useMutation } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 
@@ -37,6 +40,7 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
     lastName: '',
     role: '',
   });
+  const [id, setId] = useState<string | null>(null);
 
   useEffect(() => {
     if (editingUser) {
@@ -46,6 +50,8 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
         lastName: editingUser.lastName,
         role: editingUser.role,
       });
+
+      setId(editingUser.id);
     }
   }, [editingUser]);
 
@@ -55,18 +61,27 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
     updatedUser.lastName === editingUser?.lastName &&
     updatedUser.role === editingUser?.role;
 
-  const handleUpdate = async () => {
-    await api.patch('/user/update', {
-      email: updatedUser.email,
-      role: updatedUser.role,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-    });
-
-    setEditingUser(null);
-    refetch();
-    toast.success('Дані користувача успішно оновленно.');
-  };
+  const updateUserMutation = useMutation({
+    mutationKey: ['updateUser'],
+    mutationFn: async () => {
+      await api.patch(`/user/update/${id}`, {
+        email: updatedUser.email,
+        role: updatedUser.role,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+      });
+    },
+    onSuccess: () => {
+      setEditingUser(null);
+      refetch();
+      toast.success('Дані користувача успішно оновленно.');
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    },
+  });
 
   return (
     <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
@@ -76,7 +91,6 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
         </DialogHeader>
 
         <form className="grid grid-cols-2 gap-4">
-          {/* First Name */}
           <div className="flex flex-col gap-1">
             <label htmlFor="firstName" className="text-sm font-medium text-muted-foreground">
               Ім'я
@@ -89,7 +103,6 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
             />
           </div>
 
-          {/* Last Name */}
           <div className="flex flex-col gap-1">
             <label htmlFor="lastName" className="text-sm font-medium text-muted-foreground">
               Прізвище
@@ -102,7 +115,6 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col gap-1 col-span-2">
             <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
               Email
@@ -115,7 +127,6 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
             />
           </div>
 
-          {/* Role */}
           <div className="flex flex-col gap-1 col-span-2">
             <label htmlFor="role" className="text-sm font-medium text-muted-foreground">
               Роль
@@ -147,7 +158,6 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
             </Select>
           </div>
 
-          {/* Buttons */}
           <div className="col-span-2 flex justify-end gap-2 mt-2">
             <Button
               variant="outline"
@@ -158,8 +168,20 @@ export const EditUserDialog = ({ editingUser, setEditingUser, refetch }: Props) 
               Скасувати
             </Button>
 
-            <Button onClick={handleUpdate} disabled={isDisabled} type="button" className="h-10">
-              Зберегти
+            <Button
+              onClick={() => updateUserMutation.mutate()}
+              disabled={isDisabled}
+              type="button"
+              className="h-10"
+            >
+              {updateUserMutation.isPending ? (
+                <span className="flex items-center gap-1">
+                  <Spinner />
+                  Збереження
+                </span>
+              ) : (
+                'Зберегти'
+              )}
             </Button>
           </div>
         </form>

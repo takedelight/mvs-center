@@ -9,7 +9,7 @@ interface Props {
   refetch: () => void;
 }
 
-export const DeleteButton = ({ ids, refetch }: Props) => {
+export const DeleteSelectedUsers = ({ ids, refetch }: Props) => {
   const deleteUsersMutation = useMutation({
     mutationFn: (ids: string[]) =>
       api.delete('/user/delete', {

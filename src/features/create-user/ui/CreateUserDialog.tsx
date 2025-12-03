@@ -84,7 +84,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
         </DialogHeader>
 
         <form className="grid grid-cols-2 gap-4">
-          {/* First Name */}
           <div className="flex flex-col gap-1">
             <label htmlFor="firstName" className="text-sm font-medium text-muted-foreground">
               Ім'я
@@ -98,7 +97,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
             />
           </div>
 
-          {/* Last Name */}
           <div className="flex flex-col gap-1">
             <label htmlFor="lastName" className="text-sm font-medium text-muted-foreground">
               Прізвище
@@ -112,7 +110,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col gap-1 col-span-2">
             <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
               Email
@@ -126,7 +123,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
             />
           </div>
 
-          {/* Password */}
           <div className="flex flex-col gap-1 col-span-2">
             <label htmlFor="password" className="text-sm font-medium text-muted-foreground">
               Пароль
@@ -141,7 +137,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
             />
           </div>
 
-          {/* Role */}
           <div className="flex flex-col gap-1 col-span-2">
             <label htmlFor="role" className="text-sm font-medium text-muted-foreground">
               Роль
@@ -173,7 +168,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
             </Select>
           </div>
 
-          {/* Buttons */}
           <div className="col-span-2 flex justify-end gap-2 mt-2">
             <Button
               variant="outline"

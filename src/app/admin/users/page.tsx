@@ -25,9 +25,9 @@ import {
 import { lazy, useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { UserColumns } from '@/pages/Admin/ui/UserCells';
-import { CreateUserDialog } from '@/pages/Admin/ui/CreateUserDialog';
-import { DeleteButton } from '@/pages/Admin/ui/DeleteButton';
-import { EditUserDialog } from '@/pages/Admin/ui/EditUserDialog';
+import { EditUserDialog } from '@/features/edit-user';
+import { CreateUserDialog } from '@/features/create-user';
+import { DeleteSelectedUsers } from '@/features/delete-selected-users';
 
 export const AllUsersPage = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -65,12 +65,6 @@ export const AllUsersPage = () => {
     },
   });
 
-  const handleLogSelected = () => {
-    const selectedUsers = table.getSelectedRowModel().flatRows.map((row) => row.original.id);
-
-    console.log('Всі вибрані юзери:', selectedUsers);
-  };
-
   useEffect(() => {
     const selected = table.getSelectedRowModel().rows.map((r) => r.original.id);
     console.log('Всі вибрані юзери(effect):', selected);
@@ -97,7 +91,7 @@ export const AllUsersPage = () => {
 
         <div className="flex items-center gap-2 ">
           <CreateUserDialog refetch={refetch} />
-          <DeleteButton refetch={refetch} ids={selectedIds} />
+          <DeleteSelectedUsers refetch={refetch} ids={selectedIds} />
         </div>
       </div>
 
@@ -166,8 +160,6 @@ export const AllUsersPage = () => {
           </div>
         </div>
       </div>
-
-      <Button onClick={handleLogSelected}></Button>
 
       <EditUserDialog editingUser={editingUser} setEditingUser={setEditingUser} refetch={refetch} />
     </>

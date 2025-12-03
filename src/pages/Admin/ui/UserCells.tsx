@@ -14,7 +14,6 @@ import { MoreHorizontal } from 'lucide-react';
 import { api } from '@/shared/api';
 import { toast } from 'react-toastify';
 import type { Dispatch, SetStateAction } from 'react';
-import { useMutation } from '@tanstack/react-query';
 
 interface Props {
   refetch: () => void;
@@ -22,8 +21,6 @@ interface Props {
 }
 
 export const UserColumns = ({ refetch, setEditingUser }: Props): ColumnDef<User>[] => {
-  // const deleteUserMutation = useMutation({});
-
   return [
     {
       id: 'select',

@@ -144,7 +144,7 @@ const AdminSettingsPage = () => {
 
       <div className="mt-5 border rounded-md">
         <div className="w-[340px]  p-2 ">
-          <h2 className="font-semibold">Видалити всіх користувачів</h2>
+          <h2 className="font-semibold mb-2">Видалити всіх користувачів</h2>
           <DeleteUsersDialog refetch={refetch} />
         </div>
       </div>
