@@ -18,17 +18,23 @@ export const StatementTableColumns = (): ColumnDef<Statement>[] => {
     },
 
     {
-      accessorKey: 'isComplete',
+      accessorKey: 'status',
       header: 'Статус',
       cell: ({ row }) => {
-        const isComplete = row.getValue('isComplete');
+        const status = row.getValue('status');
 
         return (
           <div className="normal-case">
-            {isComplete ? (
+            {status === 'Виконано' && (
               <span className="text-green-700 font-semibold">Виконано</span>
-            ) : (
-              <span className="text-red-500 font-semibold">Відмовлено</span>
+            )}
+
+            {status === 'Відхилено' && (
+              <span className="text-red-500 font-semibold">Відхилено</span>
+            )}
+
+            {status === 'В обробці' && (
+              <span className="text-yellow-600 font-semibold">В обробці</span>
             )}
           </div>
         );
@@ -49,25 +55,5 @@ export const StatementTableColumns = (): ColumnDef<Statement>[] => {
         return <div className="normal-case">{formatted}</div>;
       },
     },
-
-    // {
-    //   accessorKey: 'completedAt',
-    //   header: 'Дата виконання',
-    //   cell: ({ row }) => {
-    //     const raw = row.getValue<string>('completedAt');
-
-    //     if (!raw) {
-    //       return <div className="text-red-500">—</div>;
-    //     }
-
-    //     const formatted = new Date(raw).toLocaleString('uk-UA', {
-    //       day: '2-digit',
-    //       month: '2-digit',
-    //       year: 'numeric',
-    //     });
-
-    //     return <div className="normal-case text-green-700">{formatted}</div>;
-    //   },
-    // },
   ];
 };

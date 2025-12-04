@@ -49,7 +49,7 @@ const AllUserStatementsPage = () => {
     },
     initialState: {
       pagination: {
-        pageSize: 13,
+        pageSize: 15,
       },
     },
   });
@@ -58,7 +58,7 @@ const AllUserStatementsPage = () => {
     <>
       <h1 className="font-semibold text-2xl mt-3">Заяви</h1>
 
-      <div className="mt-3 border flex flex-col p-2 h-[620px] justify-between">
+      <div className="mt-3 border flex flex-col p-2 h-[700px] justify-between">
         <div className="flex-1 overflow-auto">
           <Table className="w-full">
             <TableHeader>

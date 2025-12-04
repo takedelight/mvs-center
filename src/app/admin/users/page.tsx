@@ -22,7 +22,7 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { lazy, useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { Inbox, Search } from 'lucide-react';
 import { EditUserDialog } from '@/features/edit-user';
 import { CreateUserDialog } from '@/features/create-user';
 import { DeleteSelectedUsers } from '@/features/delete-selected-users';
@@ -73,7 +73,7 @@ export const AllUsersPage = () => {
     <>
       <h1 className="font-semibold text-2xl mt-3">Всі користувачі</h1>
 
-      <div className="  flex justify-between items-center  ">
+      <div className="  flex justify-between mt-5 items-center  ">
         <label className="flex border rounded-md px-2 w-[300px] items-center" htmlFor="search-user">
           <Search />
           <Input
@@ -93,7 +93,7 @@ export const AllUsersPage = () => {
         </div>
       </div>
 
-      <div className="mt-3 border flex flex-col p-2 h-[750px] justify-between">
+      <div className="mt-3 border flex flex-col p-2 h-[650px] justify-between">
         <div className="flex-1 overflow-auto">
           <Table className="w-full">
             <TableHeader>
@@ -123,8 +123,12 @@ export const AllUsersPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-full flex justify-center ic text-center"
+                  >
+                    <Inbox />
+                    Немає користувачів
                   </TableCell>
                 </TableRow>
               )}

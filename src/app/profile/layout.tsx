@@ -30,7 +30,7 @@ export const ProfileLayout = () => {
   });
 
   useEffect(() => {
-    if (!value || !user) navigate('/signin');
+    if (!value && !user) navigate('/signin');
   }, [value, user]);
 
   return (
