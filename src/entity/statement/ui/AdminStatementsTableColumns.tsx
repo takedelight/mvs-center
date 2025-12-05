@@ -9,8 +9,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from '@/shared/ui';
-import { MoreHorizontal } from 'lucide-react';
+import { CircleQuestionMark, MoreHorizontal } from 'lucide-react';
 import { api } from '@/shared/api';
 import { toast } from 'react-toastify';
 import { isAxiosError } from 'axios';
@@ -72,20 +75,55 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
 
     {
       accessorKey: 'status',
-      header: 'Статус',
+      header: () => (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="flex gap-1 items-center cursor-help">
+              Статус
+              <CircleQuestionMark size={15} />
+            </span>
+          </TooltipTrigger>
+
+          <TooltipContent side="top">
+            <h3 className="font-semibold mb-2">Статуси заяв:</h3>
+
+            <ul className="space-y-1">
+              <li>
+                <div>
+                  <span className="text-green-700 font-semibold">Виконано</span> — оператор одобрив
+                  вашу заяву.
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <span className="text-red-700 font-semibold">Відхилено</span> — оператор відхилив
+                  вашу заяву.
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <span className="text-yellow-700 font-semibold">В обробці</span> — ваша заява
+                  очікує, поки нею займуться.
+                </div>
+              </li>
+            </ul>
+          </TooltipContent>
+        </Tooltip>
+      ),
+
       cell: ({ row }) => {
-        const status = row.getValue('status');
+        const status = row.getValue<string>('status');
 
         return (
           <div className="normal-case">
             {status === 'Виконано' && (
               <span className="text-green-700 font-semibold">Виконано</span>
             )}
-
             {status === 'Відхилено' && (
               <span className="text-red-500 font-semibold">Відхилено</span>
             )}
-
             {status === 'В обробці' && (
               <span className="text-yellow-600 font-semibold">В обробці</span>
             )}
@@ -93,7 +131,6 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
         );
       },
     },
-
     {
       accessorKey: 'createdAt',
       header: 'Дата створення',
