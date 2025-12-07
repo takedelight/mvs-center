@@ -1,5 +1,5 @@
 import { AdminStatementTableColumns, type AdminStatement } from '@/entity/statement';
-import type { User } from '@/entity/user';
+import { ALGORITHMS, SORT_KEYS, StatementsFilter } from '@/features/statements-filter';
 import { api } from '@/shared/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +13,12 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { lazy, useMemo, useState } from 'react';
+import { lazy, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
+
+type AlgorithmValue = (typeof ALGORITHMS)[number]['value'];
+
+type SortOrder = 'asc' | 'desc';
 
 const AllStatementsPage = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -21,10 +26,36 @@ const AllStatementsPage = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  const [searchValue, setSearchValue] = useState('');
+
+  const [sortKey, setSortKey] = useState(SORT_KEYS[2]);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [algorithms, setAlgorithms] = useState<AlgorithmValue[]>([]);
+
+  const [params, setParams] = useSearchParams();
+
+  const query = useMemo(
+    () => ({
+      ...(searchValue && { q: searchValue }),
+      sort_by: sortKey.value,
+      order: sortOrder,
+      ...(algorithms.length > 0 && { algorithms: algorithms.join(',') }),
+    }),
+    [searchValue, sortKey, sortOrder, algorithms],
+  );
+
+  console.log(sortKey.alias);
+
+  useEffect(() => {
+    setParams(query);
+  }, [query, setParams]);
+
+  const serializedParams = useMemo(() => Object.fromEntries(params.entries()), [params]);
+
   const { data = [], refetch } = useQuery<AdminStatement[]>({
-    queryKey: ['allStatements'],
+    queryKey: ['allStatements', serializedParams],
     refetchOnWindowFocus: false,
-    queryFn: () => api.get('ticket/all').then((data) => data.data),
+    queryFn: () => api.get('ticket/all', { params: serializedParams }).then((data) => data.data),
   });
 
   const columns = useMemo(() => AdminStatementTableColumns({ refetch }), []);
@@ -51,7 +82,18 @@ const AllStatementsPage = () => {
     <>
       <h1 className="font-semibold text-2xl mt-3">Всі заявки</h1>
 
-      <div className="mt-5 border flex flex-col h-[650px]">
+      <StatementsFilter
+        algorithms={algorithms}
+        searchValue={searchValue}
+        setAlgorithms={setAlgorithms}
+        setSearchValue={setSearchValue}
+        setSortKey={setSortKey}
+        sortKey={sortKey}
+        setSortOrder={setSortOrder}
+        sortOrder={sortOrder}
+      />
+
+      <div className="mt-2 border flex flex-col h-[650px]">
         <div className="flex-1 overflow-auto max-h-[650px]">
           <Table className="w-full">
             <TableHeader>

@@ -2,7 +2,6 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { AdminStatement } from '../model/statement.type';
 import {
   Button,
-  Checkbox,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -24,29 +23,6 @@ interface Props {
 
 export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminStatement>[] => {
   return [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(val) => table.toggleAllPageRowsSelected(!!val)}
-        />
-      ),
-      cell: ({ row }) => {
-        return (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(val) => row.toggleSelected(!!val)}
-          />
-        );
-      },
-      enableSorting: false,
-      enableHiding: false,
-    },
-
     {
       accessorKey: 'id',
       header: 'Id',
@@ -84,7 +60,7 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
             </span>
           </TooltipTrigger>
 
-          <TooltipContent side="top">
+          <TooltipContent side="bottom">
             <h3 className="font-semibold mb-2">Статуси заяв:</h3>
 
             <ul className="space-y-1">
