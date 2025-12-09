@@ -1,5 +1,5 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import type { AdminStatement } from '../model/statement.type';
+import type { AdminStatementItem } from '../model/statement.type';
 import {
   Button,
   DropdownMenu,
@@ -21,20 +21,23 @@ interface Props {
   refetch: () => void;
 }
 
-export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminStatement>[] => {
+export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminStatementItem>[] => {
   return [
     {
       accessorKey: 'id',
       header: 'Id',
       cell: ({ row }) => {
-        const id = row.getValue<string>('id');
+        const id = row.original.id;
         return <div className="normal-case">{id}</div>;
       },
     },
-
     {
       accessorKey: 'type',
       header: 'Тип',
+      cell: ({ row }) => {
+        const type = row.original.type;
+        return <div className="normal-case">{type}</div>;
+      },
     },
     {
       header: 'ПІБ',
@@ -48,7 +51,6 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
         );
       },
     },
-
     {
       accessorKey: 'status',
       header: () => (
@@ -88,9 +90,8 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
           </TooltipContent>
         </Tooltip>
       ),
-
       cell: ({ row }) => {
-        const status = row.getValue<string>('status');
+        const status = row.original.status;
 
         return (
           <div className="normal-case">
@@ -111,7 +112,7 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
       accessorKey: 'createdAt',
       header: 'Дата створення',
       cell: ({ row }) => {
-        const raw = row.getValue<string>('createdAt');
+        const raw = row.original.createdAt;
         const formatted = new Date(raw).toLocaleString('uk-UA', {
           day: '2-digit',
           month: '2-digit',
@@ -121,12 +122,11 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
         return <div className="normal-case">{formatted}</div>;
       },
     },
-
     {
       id: 'actions',
       header: '',
       cell: ({ row }) => {
-        const { id } = row.original;
+        const { id, status } = row.original;
 
         const handleComplete = async () => {
           try {
@@ -153,7 +153,8 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
             }
           }
         };
-        const { status } = row.original;
+
+        const isFinished = status === 'Виконано' || status === 'Відхилено';
 
         return (
           <DropdownMenu>
@@ -168,7 +169,7 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                disabled={status === 'Виконано' || status === 'Відхилено'}
+                disabled={isFinished}
                 onClick={handleComplete}
                 className="text-green-700"
               >
@@ -177,7 +178,7 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
 
               <DropdownMenuItem
                 onClick={handleReject}
-                disabled={status === 'Виконано' || status === 'Відхилено'}
+                disabled={isFinished}
                 className="text-red-500"
               >
                 Відхилити

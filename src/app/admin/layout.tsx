@@ -1,22 +1,17 @@
 import type { User } from '@/entity/user';
-import { Ban, ClipboardList, Settings, Users } from 'lucide-react';
-import { Link, Outlet, useOutletContext } from 'react-router';
+import { ClipboardList, Settings, Users } from 'lucide-react';
+import { useEffect } from 'react';
+import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
 
 export const AdminLayout = () => {
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
+  const navigate = useNavigate();
 
-  if (user?.role === 'user' || !user) {
-    return (
-      <div className="h-[88vh] flex justify-center items-center">
-        <span className="flex items-center flex-col">
-          {' '}
-          <Ban size={40} />
-          <p className="text-gray-600">У вас немає доступу до цієї сторінки</p>
-          <Link to="/">На головну</Link>
-        </span>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (user && user.role === 'user') {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   return (
     <section className="container border bg-white mt-5 h-[85vh] grid grid-cols-6 rounded-md  mx-auto ">

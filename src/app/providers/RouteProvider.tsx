@@ -11,6 +11,7 @@ import { LazyAdminStatementsPage } from '../admin/statements/page';
 import { LazyAdminSettingsPage } from '../admin/settings/page';
 import { LazyNotFoundPage } from '../not-found';
 import { LazyAllUserStatementsPage } from '../profile/statements/page';
+import { FilterProvider } from './FilterProvider';
 
 export const RouteProvider = () => {
   return (
@@ -29,7 +30,14 @@ export const RouteProvider = () => {
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="users" element={<LazyAdminUsersPage />} />
-            <Route path="statements" element={<LazyAdminStatementsPage />} />
+            <Route
+              path="statements"
+              element={
+                <FilterProvider>
+                  <LazyAdminStatementsPage />
+                </FilterProvider>
+              }
+            />
             <Route path="settings" element={<LazyAdminSettingsPage />} />
           </Route>
 

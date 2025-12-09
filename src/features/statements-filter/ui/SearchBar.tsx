@@ -1,15 +1,12 @@
-import { Input } from '@/shared/ui';
-import { Search } from 'lucide-react';
-import type { Dispatch, SetStateAction } from 'react';
+import { Button, Input } from '@/shared/ui';
+import { Search, X } from 'lucide-react';
+import { useFilter } from '../hooks/useFilter';
 
-interface Props {
-  searchValue: string;
-  setSearchValue: Dispatch<SetStateAction<string>>;
-}
+export const SearchBar = () => {
+  const { searchValue, setSearchValue } = useFilter();
 
-export const SearchBar = ({ searchValue, setSearchValue }: Props) => {
   return (
-    <div className="mt-5 border w-[230px] px-1 rounded-sm">
+    <div className="mt-5 relative border w-[400px] px-1 rounded-sm">
       <label htmlFor="search" className="flex  items-center   ">
         <Search />
         <Input
@@ -20,6 +17,20 @@ export const SearchBar = ({ searchValue, setSearchValue }: Props) => {
           placeholder="Пошук за ПІБ, типом, id"
         />
       </label>
+
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        onClick={() => setSearchValue('')}
+        className={`
+    absolute top-0.5 right-1
+    transition-opacity ease-in-out duration-150
+    ${searchValue.length > 0 ? 'opacity-100' : 'opacity-0'}
+    hover:bg-transparent hover:text-inherit
+  `}
+      >
+        <X />
+      </Button>
     </div>
   );
 };
