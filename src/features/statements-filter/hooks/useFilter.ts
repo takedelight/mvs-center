@@ -10,4 +10,3 @@ export const useFilter = () => {
 
   return context;
 };
-

@@ -6,7 +6,7 @@ import { useMemo, useState, type PropsWithChildren } from 'react';
 export const FilterProvider = ({ children }: PropsWithChildren) => {
   const [order, setOrder] = useState<SortOrder>('desc');
   const [searchValue, setSearchValue] = useState('');
-  const [sortKey, setSortKey] = useState<SortKey>(SORT_KEYS[2]);
+  const [sortKey, setSortKey] = useState<SortKey>(SORT_KEYS[1]);
 
   const values = useMemo(
     () => ({
@@ -22,4 +22,3 @@ export const FilterProvider = ({ children }: PropsWithChildren) => {
 
   return <FilterContext.Provider value={values}>{children}</FilterContext.Provider>;
 };
-

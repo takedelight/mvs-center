@@ -1,5 +1,5 @@
 import type { User } from '@/entity/user';
-import { ClipboardList, Settings, Users } from 'lucide-react';
+import { ChartSpline, ClipboardList, Settings, Users } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
 
@@ -39,6 +39,14 @@ export const AdminLayout = () => {
               to="/admin/settings"
             >
               <Settings /> Налаштування
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="transition-colors p-4 ease-in-out duration-150 hover:bg-neutral-200 flex items-center gap-2"
+              to="/admin/comparison"
+            >
+              <ChartSpline /> Порівняння
             </Link>
           </li>
         </ul>

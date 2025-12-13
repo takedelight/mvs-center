@@ -12,6 +12,7 @@ import { LazyAdminSettingsPage } from '../admin/settings/page';
 import { LazyNotFoundPage } from '../not-found';
 import { LazyAllUserStatementsPage } from '../profile/statements/page';
 import { FilterProvider } from './FilterProvider';
+import { LazyAdminComparisonPage } from '../admin/comparison/page';
 
 export const RouteProvider = () => {
   return (
@@ -30,6 +31,7 @@ export const RouteProvider = () => {
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="users" element={<LazyAdminUsersPage />} />
+            <Route path="comparison" element={<LazyAdminComparisonPage />} />
             <Route
               path="statements"
               element={

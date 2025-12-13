@@ -39,7 +39,7 @@ export const Header = ({ data }: Props) => {
                 }
                 to="/admin"
               >
-                Адмінка
+                Панель керування
               </NavLink>
             )}
           </li>
