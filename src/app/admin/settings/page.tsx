@@ -2,11 +2,9 @@ import { api } from '@/shared/api';
 import { Button, Dialog, DialogTrigger, Input, Spinner } from '@/shared/ui';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { Eye, EyeClosed } from 'lucide-react';
 import { lazy, useEffect, useState, type ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
-import { DeleteUsersDialog } from '@/features/delete-all-users';
 import type { User } from '@/entity/user';
 
 const AdminSettingsPage = () => {
@@ -15,9 +13,6 @@ const AdminSettingsPage = () => {
     tickets: 10,
     users: 10,
   });
-  const [password, setPassword] = useState('');
-  const [isVisible, setVisible] = useState(false);
-
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
 
   useEffect(() => {
@@ -29,9 +24,7 @@ const AdminSettingsPage = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
 
-    if (!/^\d*$/.test(value)) return;
-
-    setQuantity((prev) => ({ ...prev, [name]: value === '' ? 0 : Number(value) }));
+    setQuantity((prev) => ({ ...prev, [name]: typeof value !== 'number' ? 0 : Number(value) }));
   };
 
   const generateTicketsMutation = useMutation({
@@ -43,19 +36,6 @@ const AdminSettingsPage = () => {
     onSuccess: () => {
       toast.success('Заяви успішно згенеровано');
       refetch();
-    },
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        toast.error(error.message);
-      }
-    },
-  });
-
-  const createUserMutation = useMutation({
-    mutationKey: ['generateUsers'],
-    mutationFn: async () => {
-      const response = await api.post(`/user/generate/${quantity.tickets}`, { password });
-      toast.success(response.data.message);
     },
     onError: (error) => {
       if (isAxiosError(error)) {
@@ -95,57 +75,6 @@ const AdminSettingsPage = () => {
               <span>Згенерувати</span>
             )}
           </Button>
-        </div>
-      </div>
-
-      <div className="mt-5 border rounded-md">
-        <div className="w-[340px]  p-2 ">
-          <h2 className="font-semibold">Згенерувати користувачів</h2>
-          <div className="flex flex-col mt-2 gap-2 ">
-            <label className="flex flex-col w-[320px]">
-              <span className="text-sm">Введіть кількість необхідних користувачів</span>
-              <Input name="users" value={quantity.users} onChange={handleChange} />
-            </label>
-            <label className="flex flex-col w-[320px] relative">
-              <span className="text-sm">Введіть пароль від аккаунтів</span>
-
-              <Input
-                type={isVisible ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-              <Button
-                type="button"
-                className="absolute right-0 top-5.5 "
-                onClick={() => setVisible((prev) => !prev)}
-                size="icon-sm"
-                variant="link"
-              >
-                {!isVisible ? <Eye /> : <EyeClosed />}
-              </Button>
-            </label>
-          </div>
-          <Button
-            disabled={createUserMutation.isPending}
-            className="mt-3 w-full"
-            onClick={() => createUserMutation.mutate()}
-          >
-            {createUserMutation.isPending ? (
-              <span className="flex items-center">
-                <Spinner /> Згенерувати
-              </span>
-            ) : (
-              <span>Згенерувати</span>
-            )}
-          </Button>
-        </div>
-      </div>
-
-      <div className="mt-5 border rounded-md">
-        <div className="w-[340px]  p-2 ">
-          <h2 className="font-semibold mb-2">Видалити всіх користувачів</h2>
-          <DeleteUsersDialog refetch={refetch} />
         </div>
       </div>
 

@@ -1,5 +1,4 @@
 import { api } from '@/shared/api';
-import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 import { cn } from '@/shared/lib/utils';
 import {
   Button,
@@ -23,7 +22,7 @@ export const SignInForm = () => {
     password: '',
   });
 
-  const { setValue } = useLocalStorage('access_token', '');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
 
   const navigate = useNavigate();
@@ -42,11 +41,9 @@ export const SignInForm = () => {
       const response = await api.post('auth/login', { ...inputValues });
       return response.data;
     },
-    onSuccess: (data) => {
-      setValue(data.access_token);
-
+    onSuccess: async () => {
       toast.success('Ви увійшли у свій профіль!');
-      refresh();
+      await refresh();
       navigate('/');
     },
     onError: (error) => {
@@ -83,13 +80,8 @@ export const SignInForm = () => {
           />
         </div>
         <div>
-          <div className="flex justify-between">
-            <label htmlFor="password">Пароль</label>
+          <label htmlFor="password">Пароль</label>
 
-            <Link className={cn(buttonVariants({ variant: 'link' }), 'text-xs')} to="/recovery">
-              Відновити пароль
-            </Link>
-          </div>
           <Input
             value={inputValues.password}
             onChange={(e) => handleChange(e)}

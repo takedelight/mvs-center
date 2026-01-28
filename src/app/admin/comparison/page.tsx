@@ -1,5 +1,4 @@
 import { Comparison } from '@/features/comparison';
-import { Compass } from 'lucide-react';
 import { lazy } from 'react';
 
 const AdminComparisonPage = () => {

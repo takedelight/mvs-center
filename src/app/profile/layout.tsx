@@ -1,37 +1,17 @@
 import type { User } from '@/entity/user';
-import { api } from '@/shared/api';
-import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
-import { Avatar, AvatarFallback, Button } from '@/shared/ui';
-import { useMutation } from '@tanstack/react-query';
-import { LogOut, Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
+import { LogOut } from '@/features/logout';
+import { Avatar, AvatarFallback } from '@/shared/ui';
+import { Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
-import { toast } from 'react-toastify';
-
 export const ProfileLayout = () => {
   const [user, refetch] = useOutletContext<[User, () => void]>();
-  const { value, deleteValue } = useLocalStorage('access_token', '');
 
   const navigate = useNavigate();
 
-  const logoutMutation = useMutation({
-    mutationKey: ['logout'],
-    mutationFn: async () => {
-      await api.post('auth/logout', {}, { withCredentials: true });
-    },
-    onSuccess: () => {
-      deleteValue();
-
-      toast.success('Ви вийшли зі свого облікового запису.');
-
-      navigate('/');
-      refetch();
-    },
-  });
-
   useEffect(() => {
-    if (!value && !user) navigate('/signin');
-  }, [value, user]);
+    if (!user) navigate('/signin');
+  }, [user, navigate]);
 
   return (
     <section className="container h-[85vh] mt-5 mx-auto px-1">
@@ -91,17 +71,11 @@ export const ProfileLayout = () => {
             </li>
           </ul>
 
-          <Button
-            onClick={() => logoutMutation.mutate()}
-            variant="ghost"
-            className="w-full text-lg  text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
-          >
-            <LogOut /> Вийти
-          </Button>
+          <LogOut />
         </aside>
 
         <div className="col-start-2 p-2   col-end-5 ">
-          <div className="  mx-auto">
+          <div className="mx-auto">
             <Outlet context={[user, refetch]} />
           </div>
         </div>

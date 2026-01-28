@@ -3,8 +3,8 @@ import { api } from '@/shared/api';
 import { Button, Input, Spinner } from '@/shared/ui';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { lazy, useState, type ChangeEvent } from 'react';
-import { useOutletContext } from 'react-router';
+import { lazy, useEffect, useState, type ChangeEvent } from 'react';
+import { useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 interface UserInfo {
@@ -16,6 +16,12 @@ interface UserInfo {
 
 const ProfilePage = () => {
   const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) navigate('/signin');
+  }, []);
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user?.email ?? '',
