@@ -8,10 +8,10 @@ import { Providers } from './providers/Providers';
 export const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
-  <QueryClientProvider client={queryClient}>
-    <StrictMode>
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
       <Providers />
       <ReactQueryDevtools initialIsOpen={false} />
-    </StrictMode>
-  </QueryClientProvider>,
+    </QueryClientProvider>
+  </StrictMode>,
 );

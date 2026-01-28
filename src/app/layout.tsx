@@ -7,22 +7,23 @@ import { Suspense, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 
 export const RootLayout = () => {
-  const { data, refetch, isError } = useQuery<User>({
+  const { data, refetch, isPending, isError } = useQuery<User>({
     queryKey: ['profile'],
 
     refetchOnWindowFocus: false,
     gcTime: 0,
     retry: false,
+
     queryFn: async () => await api.get('/user/me').then((data) => data.data),
   });
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isError || !data) {
+    if (!isPending && (isError || !data)) {
       navigate('/signin');
     }
-  }, [isError, data, navigate]);
+  }, [isError, data, isPending, navigate]);
 
   return (
     <div className="flex flex-col h-screen antialiased">

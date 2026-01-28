@@ -30,16 +30,7 @@ export const ProfileLayout = () => {
               <Link to="/profile" className="truncate">
                 {user?.firstName} {user?.lastName}
               </Link>
-              <Link
-                to="/profile"
-                className="text-sm group transition-colors ease-in-out duration-150 hover:text-muted-foreground gap-1 flex truncate items-center"
-              >
-                {user?.email}
-                <SquarePen
-                  size={10}
-                  className="opacity-0 ease-in-out duration-150 transition-opacity group-hover:opacity-100"
-                />
-              </Link>
+              <span className="text-sm group  gap-1 flex truncate items-center">{user?.email}</span>
             </div>
           </div>
 

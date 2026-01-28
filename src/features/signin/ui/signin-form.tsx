@@ -1,19 +1,9 @@
 import { api } from '@/shared/api';
-import { cn } from '@/shared/lib/utils';
-import {
-  Button,
-  buttonVariants,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Input,
-  Spinner,
-} from '@/shared/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, Spinner } from '@/shared/ui';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState, type ChangeEvent } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SignInForm = () => {
