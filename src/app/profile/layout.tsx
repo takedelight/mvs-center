@@ -1,7 +1,7 @@
 import type { User } from '@/entity/user';
 import { LogOut } from '@/features/logout';
 import { Avatar, AvatarFallback } from '@/shared/ui';
-import { Mail, Settings, SquarePen, UserRoundPen } from 'lucide-react';
+import { Mail, Settings, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
 export const ProfileLayout = () => {

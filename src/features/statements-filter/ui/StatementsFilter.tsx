@@ -18,7 +18,7 @@ export const StatementsFilter = () => {
   const { setOrder, sortKey, setSortKey } = useFilter();
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex mt-5 items-center justify-between">
       <SearchBar />
 
       <ul className="flex items-center gap-3">
@@ -63,4 +63,3 @@ export const StatementsFilter = () => {
     </div>
   );
 };
-

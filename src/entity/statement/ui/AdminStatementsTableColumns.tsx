@@ -171,7 +171,7 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
               <DropdownMenuItem
                 disabled={isFinished}
                 onClick={handleComplete}
-                className="text-green-700"
+                className="text-green-700 focus:text-green-700 focus:bg-green-50 cursor-pointer"
               >
                 Виконати
               </DropdownMenuItem>
@@ -179,7 +179,7 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
               <DropdownMenuItem
                 onClick={handleReject}
                 disabled={isFinished}
-                className="text-red-500"
+                className="text-red-500 focus:text-red-500 focus:bg-red-50 cursor-pointer"
               >
                 Відхилити
               </DropdownMenuItem>
@@ -190,4 +190,3 @@ export const AdminStatementTableColumns = ({ refetch }: Props): ColumnDef<AdminS
     },
   ];
 };
-

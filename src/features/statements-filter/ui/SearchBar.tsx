@@ -6,7 +6,7 @@ export const SearchBar = () => {
   const { searchValue, setSearchValue } = useFilter();
 
   return (
-    <div className="mt-5 relative border w-[400px] px-1 rounded-sm">
+    <div className=" relative border w-[400px] px-1 rounded-sm">
       <label htmlFor="search" className="flex  items-center   ">
         <Search />
         <Input
@@ -34,4 +34,3 @@ export const SearchBar = () => {
     </div>
   );
 };
-
