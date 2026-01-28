@@ -81,10 +81,8 @@ export const AllUsersPage = () => {
             className="border-0 outline-0 focus-visible:ring-0"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Пошук за email, ПІБ або id"
+            placeholder="Пошук за email або ПІБ"
           />
-
-          <span>ДОРОБИТИ</span>
         </label>
 
         <div className="flex items-center gap-2 ">

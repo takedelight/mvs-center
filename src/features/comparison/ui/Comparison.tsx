@@ -26,10 +26,14 @@ import {
 import { ChartContainer } from '@/shared/ui';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 
-interface ComparisonResult {
-  algorithm: string;
-  time: number;
-  operations: number;
+// 1. Оновлюємо інтерфейс під реальний JSON
+interface ComparisonResponse {
+  total: number;
+  result: {
+    algorithm: string;
+    time: number;
+    operations: number;
+  };
 }
 
 export const Comparison = () => {
@@ -38,7 +42,7 @@ export const Comparison = () => {
 
   const debouncedQuantity = useDebounce<number>(quantity, 500);
 
-  const { data: chartData } = useQuery<ComparisonResult[]>({
+  const { data: chartData } = useQuery<ComparisonResponse[]>({
     queryKey: ['comparison', debouncedQuantity, algorithms],
     queryFn: () => getComparisonResult(debouncedQuantity, algorithms),
     refetchOnWindowFocus: false,
@@ -55,6 +59,9 @@ export const Comparison = () => {
       color: 'blue',
     },
   };
+
+  // 2. ВИПРАВЛЕНО: total знаходиться на верхньому рівні, а не в result
+  const totalItems = chartData?.[0]?.total ?? 0;
 
   return (
     <>
@@ -109,6 +116,11 @@ export const Comparison = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </li>
+
+          <li>
+            Масив:
+            <span className="font-medium ml-1">{totalItems} шт</span>
+          </li>
         </ul>
       </div>
 
@@ -118,10 +130,11 @@ export const Comparison = () => {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="algorithm" />
+
+                {/* 3. ВИПРАВЛЕНО: algorithm знаходиться всередині result */}
+                <XAxis dataKey="result.algorithm" />
 
                 <YAxis yAxisId="left" />
-
                 <YAxis yAxisId="right" orientation="right" />
 
                 <Tooltip content={<ChartTooltipContent />} />
@@ -130,18 +143,18 @@ export const Comparison = () => {
                 <Line
                   yAxisId="left"
                   type="monotone"
-                  dataKey="time"
+                  dataKey="result.time"
                   name="Час виконання"
-                  stroke="green"
+                  stroke="red"
                   strokeWidth={2}
                 />
 
                 <Line
                   yAxisId="right"
                   type="monotone"
-                  dataKey="operations"
+                  dataKey="result.operations"
                   name="Кількість операцій"
-                  stroke="orange"
+                  stroke="blue"
                   strokeWidth={2}
                 />
               </LineChart>

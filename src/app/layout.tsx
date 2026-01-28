@@ -4,7 +4,7 @@ import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
 import { useQuery } from '@tanstack/react-query';
 import { Suspense, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
 export const RootLayout = () => {
   const { data, refetch, isPending, isError } = useQuery<User>({
@@ -18,12 +18,15 @@ export const RootLayout = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthRoute =
+    location.pathname.startsWith('/signin') || location.pathname.startsWith('/register');
 
   useEffect(() => {
-    if (!isPending && (isError || !data)) {
+    if (!isPending && !isAuthRoute && (isError || !data)) {
       navigate('/signin');
     }
-  }, [isError, data, isPending, navigate]);
+  }, [isError, data, isPending, navigate, isAuthRoute]);
 
   return (
     <div className="flex flex-col h-screen antialiased">

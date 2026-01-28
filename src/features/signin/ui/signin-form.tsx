@@ -3,7 +3,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input, Spinner } from
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState, type ChangeEvent } from 'react';
-import { useNavigate, useOutletContext } from 'react-router';
+import { Link, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const SignInForm = () => {
@@ -57,7 +57,7 @@ export const SignInForm = () => {
         <CardTitle>Вхід у обліковий запис</CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-6">
+      <CardContent className="flex flex-col gap-4">
         <div>
           <label htmlFor="email">Email</label>
           <Input
@@ -95,6 +95,16 @@ export const SignInForm = () => {
             <span>Увійти</span>
           )}
         </Button>
+
+        <span className="block text-sm text-muted-foreground text-center ">
+          Ще немає акаунту?{' '}
+          <Link
+            to="/register"
+            className="text-black underline transition-colors ease-in-out duration-150 hover:text-neutral-800"
+          >
+            Зареєструватися
+          </Link>
+        </span>
       </CardContent>
     </Card>
   );
