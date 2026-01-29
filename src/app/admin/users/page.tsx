@@ -1,14 +1,5 @@
 import { api } from '@/shared/api';
-import {
-  Button,
-  Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui';
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui';
 import { useQuery } from '@tanstack/react-query';
 import {
   flexRender,
@@ -22,7 +13,7 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { lazy, useEffect, useMemo, useState } from 'react';
-import { Inbox, Search } from 'lucide-react';
+import { Inbox } from 'lucide-react';
 import { EditUserDialog } from '@/features/edit-user';
 import { CreateUserDialog } from '@/features/create-user';
 import { DeleteSelectedUsers } from '@/features/delete-selected-users';
@@ -34,7 +25,6 @@ export const AllUsersPage = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [searchValue, setSearchValue] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const { data = [], refetch } = useQuery<User[]>({
@@ -73,18 +63,7 @@ export const AllUsersPage = () => {
     <>
       <h1 className="font-semibold text-2xl mt-3">Всі користувачі</h1>
 
-      <div className="  flex justify-between mt-5 items-center  ">
-        <label className="flex border rounded-md px-2 w-[300px] items-center" htmlFor="search-user">
-          <Search />
-          <Input
-            id="search-user"
-            className="border-0 outline-0 focus-visible:ring-0"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Пошук за email або ПІБ"
-          />
-        </label>
-
+      <div className="  flex justify-end mt-5   ">
         <div className="flex items-center gap-2 ">
           <CreateUserDialog refetch={refetch} />
           <DeleteSelectedUsers refetch={refetch} ids={selectedIds} />
