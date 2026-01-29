@@ -56,7 +56,7 @@ const AllUserStatementsPage = () => {
 
   return (
     <>
-      <h1 className="font-semibold text-2xl mt-3">Заяви</h1>
+      <h1 className="font-semibold text-2xl mt-3"> Мої заяви</h1>
 
       <div className="mt-3 border flex flex-col p-2 h-[700px] justify-between">
         <div className="flex-1 overflow-auto">
