@@ -17,7 +17,8 @@ export const LogOut = () => {
     onSuccess: async () => {
       toast.success('Ви вийшли зі свого облікового запису.');
 
-      queryClient.setQueryData(['profile'], null);
+      await queryClient.cancelQueries();
+      queryClient.clear();
 
       navigate('/');
     },
@@ -31,9 +32,10 @@ export const LogOut = () => {
       onClick={() => logoutMutation.mutate()}
       disabled={logoutMutation.isPending}
       variant="ghost"
-      className="w-full text-lg text-red-500 mt-auto hover:text-red-500 justify-normal rounded-none"
+      className="mt-auto w-full justify-start gap-2 rounded-none p-4 text-lg text-red-500 hover:bg-red-50 hover:text-red-600"
     >
-      <LogOutIcon /> Вийти
+      <LogOutIcon size={20} />
+      Вийти
     </Button>
   );
 };

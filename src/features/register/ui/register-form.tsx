@@ -60,79 +60,81 @@ export const RegisterForm = () => {
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4">
-        <div className="flex gap-5 ">
+        <form action="">
+          <div className="flex gap-5 ">
+            <div>
+              <label htmlFor="firstName">First Name</label>
+              <Input
+                value={inputValues.firstName}
+                onChange={(e) => handleChange(e)}
+                id="firstName"
+                placeholder="John"
+                type="text"
+                name="firstName"
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName">Last Name</label>
+              <Input
+                value={inputValues.lastName}
+                onChange={(e) => handleChange(e)}
+                id="lastName"
+                placeholder="Doe"
+                type="text"
+                name="lastName"
+              />
+            </div>
+          </div>
+
           <div>
-            <label htmlFor="firstName">First Name</label>
+            <label htmlFor="email">Email</label>
             <Input
-              value={inputValues.firstName}
+              value={inputValues.email}
               onChange={(e) => handleChange(e)}
-              id="firstName"
-              placeholder="John"
-              type="text"
-              name="firstName"
+              id="email"
+              placeholder="JohnDoe@example.com"
+              type="email"
+              name="email"
             />
           </div>
+
           <div>
-            <label htmlFor="lastName">Last Name</label>
+            <label htmlFor="password">Пароль</label>
+
             <Input
-              value={inputValues.lastName}
+              value={inputValues.password}
               onChange={(e) => handleChange(e)}
-              id="lastName"
-              placeholder="Doe"
-              type="text"
-              name="lastName"
+              id="password"
+              placeholder="********"
+              type="password"
+              name="password"
             />
           </div>
-        </div>
 
-        <div>
-          <label htmlFor="email">Email</label>
-          <Input
-            value={inputValues.email}
-            onChange={(e) => handleChange(e)}
-            id="email"
-            placeholder="JohnDoe@example.com"
-            type="email"
-            name="email"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password">Пароль</label>
-
-          <Input
-            value={inputValues.password}
-            onChange={(e) => handleChange(e)}
-            id="password"
-            placeholder="********"
-            type="password"
-            name="password"
-          />
-        </div>
-
-        <Button
-          disabled={loginMutation.isPending}
-          onClick={() => loginMutation.mutate()}
-          className="uppercase tracking-wide"
-        >
-          {loginMutation.isPending ? (
-            <span className="flex gap-1 items-center">
-              <Spinner /> Зареєструватися
-            </span>
-          ) : (
-            <span>Зареєструватися</span>
-          )}
-        </Button>
-
-        <span className="block text-sm text-muted-foreground text-center ">
-          Вже маєте акаунт?{' '}
-          <Link
-            to="/signin"
-            className="text-black underline transition-colors ease-in-out duration-150 hover:text-neutral-800"
+          <Button
+            disabled={loginMutation.isPending}
+            onClick={() => loginMutation.mutate()}
+            className="uppercase tracking-wide"
           >
-            Увійти
-          </Link>
-        </span>
+            {loginMutation.isPending ? (
+              <span className="flex gap-1 items-center">
+                <Spinner /> Зареєструватися
+              </span>
+            ) : (
+              <span>Зареєструватися</span>
+            )}
+          </Button>
+
+          <span className="block text-sm text-muted-foreground text-center ">
+            Вже маєте акаунт?{' '}
+            <Link
+              to="/signin"
+              className="text-black underline transition-colors ease-in-out duration-150 hover:text-neutral-800"
+            >
+              Увійти
+            </Link>
+          </span>
+        </form>
       </CardContent>
     </Card>
   );
