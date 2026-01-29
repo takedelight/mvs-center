@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_PUBLIC_API_URL: http://localhost:5000
+    container_name: mvs-front
+    restart: always
+    ports:
+      - '4173:4173'
