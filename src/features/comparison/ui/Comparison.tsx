@@ -1,6 +1,8 @@
 import { ALGORITHMS } from '@/shared/constants';
 import {
   Button,
+  Card,
+  CardContent,
   ChartTooltipContent,
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -13,20 +15,19 @@ import { ChevronDownIcon } from 'lucide-react';
 import { useState } from 'react';
 import { getComparisonResult } from '../model/getComparisonResult';
 
+import { useDebounce } from '@/shared/hooks/useDebounce';
+import { ChartContainer } from '@/shared/ui';
 import {
-  ResponsiveContainer,
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend,
-  CartesianGrid,
 } from 'recharts';
-import { ChartContainer } from '@/shared/ui';
-import { useDebounce } from '@/shared/hooks/useDebounce';
 
-// 1. Оновлюємо інтерфейс під реальний JSON
 interface ComparisonResponse {
   total: number;
   result: {
@@ -42,11 +43,14 @@ export const Comparison = () => {
 
   const debouncedQuantity = useDebounce<number>(quantity, 500);
 
+  // Умова: запит йде тільки якщо обрано 2 або більше алгоритми
+  const canCompare = algorithms.length >= 2;
+
   const { data: chartData } = useQuery<ComparisonResponse[]>({
     queryKey: ['comparison', debouncedQuantity, algorithms],
     queryFn: () => getComparisonResult(debouncedQuantity, algorithms),
     refetchOnWindowFocus: false,
-    enabled: algorithms.length > 0 && debouncedQuantity > 0,
+    enabled: canCompare && debouncedQuantity > 0,
   });
 
   const config = {
@@ -60,7 +64,6 @@ export const Comparison = () => {
     },
   };
 
-  // 2. ВИПРАВЛЕНО: total знаходиться на верхньому рівні, а не в result
   const totalItems = chartData?.[0]?.total ?? 0;
 
   return (
@@ -124,44 +127,51 @@ export const Comparison = () => {
         </ul>
       </div>
 
-      {chartData && (
-        <div className="w-full mt-5 h-[500px]">
-          <ChartContainer className="w-full px-3 h-full" config={config}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
+      <Card className="w-full mt-5 h-[500px] flex items-center justify-center">
+        {!canCompare ? (
+          <span className="text-muted-foreground font-medium">
+            Оберіть 2 алгоритми для порівняння
+          </span>
+        ) : (
+          <CardContent className="w-full h-full p-6">
+            <ChartContainer className="w-full px-3 h-full" config={config}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
 
-                {/* 3. ВИПРАВЛЕНО: algorithm знаходиться всередині result */}
-                <XAxis dataKey="result.algorithm" />
+                  <XAxis dataKey="result.algorithm" />
 
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
+                  <YAxis yAxisId="left" />
 
-                <Tooltip content={<ChartTooltipContent />} />
-                <Legend />
+                  <YAxis yAxisId="right" orientation="right" />
 
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="result.time"
-                  name="Час виконання"
-                  stroke="red"
-                  strokeWidth={2}
-                />
+                  <Tooltip content={<ChartTooltipContent />} />
 
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="result.operations"
-                  name="Кількість операцій"
-                  stroke="blue"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </div>
-      )}
+                  <Legend />
+
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="result.time"
+                    name="Час виконання"
+                    stroke="red"
+                    strokeWidth={2}
+                  />
+
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="result.operations"
+                    name="Кількість операцій"
+                    stroke="blue"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        )}
+      </Card>
     </>
   );
 };
