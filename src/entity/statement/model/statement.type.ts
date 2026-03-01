@@ -15,9 +15,3 @@ export interface AdminStatementItem {
   firstName: string;
   lastName: string;
 }
-
-export interface AdminStatement {
-  result: AdminStatementItem[];
-  time: number;
-  operations: number;
-}

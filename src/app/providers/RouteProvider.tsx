@@ -13,6 +13,7 @@ import { LazyNotFoundPage } from '../not-found';
 import { LazyAllUserStatementsPage } from '../profile/statements/page';
 import { FilterProvider } from './FilterProvider';
 import { LazyAdminComparisonPage } from '../admin/comparison/page';
+import { LazyRegisterPage } from '../register/page';
 
 export const RouteProvider = () => {
   return (
@@ -22,6 +23,7 @@ export const RouteProvider = () => {
           <Route index element={<LazyHomePage />} />
 
           <Route path="/signin" element={<LazyLoginPage />} />
+          <Route path="/register" element={<LazyRegisterPage />} />
 
           <Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<LazyProfilePage />} />

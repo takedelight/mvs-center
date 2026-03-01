@@ -26,16 +26,12 @@ import {
 import { ChartContainer } from '@/shared/ui';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 
-interface ComparisonResult {
-  algorithm: string;
-  sorted: {
-    result: {
-      id: number;
-      type: string;
-      status: string;
-      createdAt: string;
-    }[];
-    time: string;
+// 1. Оновлюємо інтерфейс під реальний JSON
+interface ComparisonResponse {
+  total: number;
+  result: {
+    algorithm: string;
+    time: number;
     operations: number;
   };
 }
@@ -44,33 +40,28 @@ export const Comparison = () => {
   const [quantity, setQuantity] = useState(100);
   const [algorithms, setAlgorithms] = useState<string[]>([]);
 
-  const debauncedQuantity = useDebounce<number>(quantity, 500);
+  const debouncedQuantity = useDebounce<number>(quantity, 500);
 
-  const { data } = useQuery<ComparisonResult[]>({
-    queryKey: ['comparison', quantity, algorithms],
-    queryFn: () => getComparisonResult(debauncedQuantity, algorithms),
+  const { data: chartData } = useQuery<ComparisonResponse[]>({
+    queryKey: ['comparison', debouncedQuantity, algorithms],
+    queryFn: () => getComparisonResult(debouncedQuantity, algorithms),
     refetchOnWindowFocus: false,
-    enabled: algorithms.length > 0,
+    enabled: algorithms.length > 0 && debouncedQuantity > 0,
   });
-
-  console.log(data);
 
   const config = {
     time: {
-      alias: 'Час виконання',
+      label: 'Час виконання (мс)',
       color: 'red',
     },
     operations: {
-      alias: 'Кількість операцій',
+      label: 'Кількість операцій',
       color: 'blue',
     },
   };
 
-  const chartData = data?.map((d) => ({
-    algorithm: d.algorithm,
-    time: Number(d.sorted.time.replace('ms', '')),
-    operations: d.sorted.operations,
-  }));
+  // 2. ВИПРАВЛЕНО: total знаходиться на верхньому рівні, а не в result
+  const totalItems = chartData?.[0]?.total ?? 0;
 
   return (
     <>
@@ -78,7 +69,6 @@ export const Comparison = () => {
         <ul className="flex items-end gap-6">
           <li className="flex flex-col gap-1">
             <span className="font-medium text-sm text-muted-foreground">Кількість елементів</span>
-
             <div className="relative w-[120px]">
               <Input
                 value={quantity}
@@ -95,7 +85,6 @@ export const Comparison = () => {
 
           <li className="flex flex-col gap-1">
             <span className="font-medium text-sm text-muted-foreground">Алгоритми сортування</span>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -127,6 +116,11 @@ export const Comparison = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </li>
+
+          <li>
+            Масив:
+            <span className="font-medium ml-1">{totalItems} шт</span>
+          </li>
         </ul>
       </div>
 
@@ -137,16 +131,32 @@ export const Comparison = () => {
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
 
-                <XAxis dataKey="algorithm" />
+                {/* 3. ВИПРАВЛЕНО: algorithm знаходиться всередині result */}
+                <XAxis dataKey="result.algorithm" />
 
-                <YAxis />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
 
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
 
-                <Line type="basis" dataKey="time" name="Час виконання" stroke="red" />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="result.time"
+                  name="Час виконання"
+                  stroke="red"
+                  strokeWidth={2}
+                />
 
-                <Line type="basis" dataKey="operations" name="Кількість операцій" />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="result.operations"
+                  name="Кількість операцій"
+                  stroke="blue"
+                  strokeWidth={2}
+                />
               </LineChart>
             </ResponsiveContainer>
           </ChartContainer>

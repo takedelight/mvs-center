@@ -1,16 +1,5 @@
 import { api } from '@/shared/api';
-import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
-import { cn } from '@/shared/lib/utils';
-import {
-  Button,
-  buttonVariants,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Input,
-  Spinner,
-} from '@/shared/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, Spinner } from '@/shared/ui';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState, type ChangeEvent } from 'react';
@@ -23,7 +12,7 @@ export const SignInForm = () => {
     password: '',
   });
 
-  const { setValue } = useLocalStorage('access_token', '');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
 
   const navigate = useNavigate();
@@ -42,11 +31,9 @@ export const SignInForm = () => {
       const response = await api.post('auth/login', { ...inputValues });
       return response.data;
     },
-    onSuccess: (data) => {
-      setValue(data.access_token);
-
+    onSuccess: async () => {
       toast.success('Ви увійшли у свій профіль!');
-      refresh();
+      await refresh();
       navigate('/');
     },
     onError: (error) => {
@@ -70,7 +57,7 @@ export const SignInForm = () => {
         <CardTitle>Вхід у обліковий запис</CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-6">
+      <CardContent className="flex flex-col gap-4">
         <div>
           <label htmlFor="email">Email</label>
           <Input
@@ -83,13 +70,8 @@ export const SignInForm = () => {
           />
         </div>
         <div>
-          <div className="flex justify-between">
-            <label htmlFor="password">Пароль</label>
+          <label htmlFor="password">Пароль</label>
 
-            <Link className={cn(buttonVariants({ variant: 'link' }), 'text-xs')} to="/recovery">
-              Відновити пароль
-            </Link>
-          </div>
           <Input
             value={inputValues.password}
             onChange={(e) => handleChange(e)}
@@ -113,6 +95,16 @@ export const SignInForm = () => {
             <span>Увійти</span>
           )}
         </Button>
+
+        <span className="block text-sm text-muted-foreground text-center ">
+          Ще немає акаунту?{' '}
+          <Link
+            to="/register"
+            className="text-black underline transition-colors ease-in-out duration-150 hover:text-neutral-800"
+          >
+            Зареєструватися
+          </Link>
+        </span>
       </CardContent>
     </Card>
   );

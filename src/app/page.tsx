@@ -1,7 +1,12 @@
+import { CreateTicketForm } from '@/features/create-ticket';
 import { lazy } from 'react';
 
-const App = () => {
-  return <></>;
+const HomePage = () => {
+  return (
+    <section className="flex h-[88vh] items-center justify-center">
+      <CreateTicketForm />
+    </section>
+  );
 };
 
-export const LazyHomePage = lazy(() => Promise.resolve({ default: App }));
+export const LazyHomePage = lazy(() => Promise.resolve({ default: HomePage }));

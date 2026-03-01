@@ -6,7 +6,7 @@ import { useMemo, useState, type PropsWithChildren } from 'react';
 export const FilterProvider = ({ children }: PropsWithChildren) => {
   const [order, setOrder] = useState<SortOrder>('desc');
   const [searchValue, setSearchValue] = useState('');
-  const [sortKey, setSortKey] = useState<SortKey>(SORT_KEYS[1]);
+  const [sortKey, setSortKey] = useState<SortKey>(SORT_KEYS[2]);
 
   const values = useMemo(
     () => ({

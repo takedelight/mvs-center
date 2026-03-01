@@ -1,17 +1,17 @@
 import { api } from '@/shared/api';
 import {
   Button,
+  Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Dialog,
-  DialogTrigger,
   Spinner,
 } from '@/shared/ui';
 
@@ -43,11 +43,12 @@ export const CreateUserDialog = ({ refetch }: Props) => {
   });
   const [isOpen, setOpen] = useState(false);
 
-  const hanleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const isFormValid = Object.values(userData).every((value) => value.trim() !== '');
 
   const createUserMutation = useMutation({
     mutationFn: (data: CreateUserData) => api.post('/user/create', data),
@@ -60,7 +61,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
     onError: (error) => {
       if (isAxiosError(error)) {
         const msg = error.response?.data.message;
-
         if (error.response?.status === 409) {
           toast.error(msg);
         }
@@ -78,9 +78,7 @@ export const CreateUserDialog = ({ refetch }: Props) => {
 
       <DialogContent className="max-w-[480px] p-6 space-y-6">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
-            Створення користувача <span>ADD VALIDATION</span>
-          </DialogTitle>
+          <DialogTitle className="text-xl font-semibold">Створення користувача</DialogTitle>
         </DialogHeader>
 
         <form className="grid grid-cols-2 gap-4">
@@ -92,7 +90,7 @@ export const CreateUserDialog = ({ refetch }: Props) => {
               id="firstName"
               name="firstName"
               value={userData.firstName}
-              onChange={hanleChange}
+              onChange={handleChange}
               className="h-10"
             />
           </div>
@@ -105,7 +103,7 @@ export const CreateUserDialog = ({ refetch }: Props) => {
               id="lastName"
               name="lastName"
               value={userData.lastName}
-              onChange={hanleChange}
+              onChange={handleChange}
               className="h-10"
             />
           </div>
@@ -118,7 +116,7 @@ export const CreateUserDialog = ({ refetch }: Props) => {
               id="email"
               name="email"
               value={userData.email}
-              onChange={hanleChange}
+              onChange={handleChange}
               className="h-10 normal-case"
             />
           </div>
@@ -132,7 +130,7 @@ export const CreateUserDialog = ({ refetch }: Props) => {
               name="password"
               type="password"
               value={userData.password}
-              onChange={hanleChange}
+              onChange={handleChange}
               className="h-10 normal-case"
             />
           </div>
@@ -144,26 +142,15 @@ export const CreateUserDialog = ({ refetch }: Props) => {
 
             <Select
               value={userData.role}
-              onValueChange={(value) => setUserData({ ...userData, role: value })}
+              onValueChange={(value) => setUserData((prev) => ({ ...prev, role: value }))}
             >
               <SelectTrigger className="h-10">
                 <SelectValue placeholder="Оберіть роль" />
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem
-                  onClick={() => setUserData((prev) => ({ ...prev, role: 'user' }))}
-                  value="user"
-                >
-                  Користувач
-                </SelectItem>
-
-                <SelectItem
-                  onClick={() => setUserData((prev) => ({ ...prev, role: 'operator' }))}
-                  value="operator"
-                >
-                  Оператор
-                </SelectItem>
+                <SelectItem value="user">Користувач</SelectItem>
+                <SelectItem value="operator">Оператор</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -182,7 +169,7 @@ export const CreateUserDialog = ({ refetch }: Props) => {
               onClick={() => createUserMutation.mutate(userData)}
               type="button"
               className="h-10"
-              disabled={createUserMutation.isPending}
+              disabled={createUserMutation.isPending || !isFormValid}
             >
               {createUserMutation.isPending ? (
                 <span className="flex items-center gap-2">

@@ -3,16 +3,30 @@ import { api } from '@/shared/api';
 import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
 import { useQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
-import { Outlet } from 'react-router';
+import { Suspense, useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
 export const RootLayout = () => {
-  const { data, refetch } = useQuery<User>({
+  const { data, refetch, isPending, isError } = useQuery<User>({
     queryKey: ['profile'],
+
     refetchOnWindowFocus: false,
-    queryFn: async () => await api.get('/user/me').then((data) => data.data),
+    gcTime: 0,
     retry: false,
+
+    queryFn: async () => await api.get('/user/me').then((data) => data.data),
   });
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthRoute =
+    location.pathname.startsWith('/signin') || location.pathname.startsWith('/register');
+
+  useEffect(() => {
+    if (!isPending && !isAuthRoute && (isError || !data)) {
+      navigate('/signin');
+    }
+  }, [isError, data, isPending, navigate, isAuthRoute]);
 
   return (
     <div className="flex flex-col h-screen antialiased">
