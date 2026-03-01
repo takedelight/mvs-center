@@ -48,7 +48,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Перевірка: чи всі поля мають значення (не пусті рядки)
   const isFormValid = Object.values(userData).every((value) => value.trim() !== '');
 
   const createUserMutation = useMutation({
@@ -170,7 +169,6 @@ export const CreateUserDialog = ({ refetch }: Props) => {
               onClick={() => createUserMutation.mutate(userData)}
               type="button"
               className="h-10"
-              // Кнопка неактивна, якщо йде запит АБО форма не валідна
               disabled={createUserMutation.isPending || !isFormValid}
             >
               {createUserMutation.isPending ? (

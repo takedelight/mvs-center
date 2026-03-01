@@ -2,7 +2,7 @@ import { api } from '@/shared/api';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input, Spinner } from '@/shared/ui';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
@@ -14,74 +14,68 @@ export const RegisterForm = () => {
     password: '',
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
-
+  const [_, refresh] = useOutletContext<[unknown, () => Promise<void> | void]>();
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {
-      target: { value, name },
-    } = e;
-
+    const { name, value } = e.target;
     setInputValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const loginMutation = useMutation({
+  const registerMutation = useMutation({
     mutationKey: ['register'],
     mutationFn: async () => {
       const response = await api.post('auth/register', { ...inputValues });
       return response.data;
     },
     onSuccess: async () => {
-      toast.success('Ви  успішно зареєструвалися  !');
+      toast.success('Ви успішно зареєструвалися!');
       await refresh();
       navigate('/');
     },
     onError: (error) => {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data.message;
-
-        if (error.response?.status === 409) {
-          toast.error(errorMessage);
-        }
-
-        if (error.response?.status === 401) {
-          toast.error(errorMessage);
-        }
+        const errorMessage = error.response?.data?.message || 'Помилка реєстрації';
+        toast.error(errorMessage);
       }
     },
   });
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    registerMutation.mutate();
+  };
 
   return (
     <Card className="w-[500px]">
       <CardHeader>
         <CardTitle>Реєстрація нового користувача</CardTitle>
       </CardHeader>
-
-      <CardContent className="flex flex-col gap-4">
-        <form action="">
-          <div className="flex gap-5 ">
-            <div>
+      <CardContent>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="flex gap-2">
+            <div className="flex-1">
               <label htmlFor="firstName">First Name</label>
               <Input
                 value={inputValues.firstName}
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
                 id="firstName"
                 placeholder="John"
                 type="text"
                 name="firstName"
+                required
               />
             </div>
-            <div>
+            <div className="flex-1">
               <label htmlFor="lastName">Last Name</label>
               <Input
                 value={inputValues.lastName}
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
                 id="lastName"
                 placeholder="Doe"
                 type="text"
                 name="lastName"
+                required
               />
             </div>
           </div>
@@ -90,50 +84,49 @@ export const RegisterForm = () => {
             <label htmlFor="email">Email</label>
             <Input
               value={inputValues.email}
-              onChange={(e) => handleChange(e)}
+              onChange={handleChange}
               id="email"
               placeholder="JohnDoe@example.com"
               type="email"
               name="email"
+              required
             />
           </div>
 
           <div>
             <label htmlFor="password">Пароль</label>
-
             <Input
               value={inputValues.password}
-              onChange={(e) => handleChange(e)}
+              onChange={handleChange}
               id="password"
               placeholder="********"
               type="password"
               name="password"
+              required
             />
           </div>
 
-          <Button
-            disabled={loginMutation.isPending}
-            onClick={() => loginMutation.mutate()}
-            className="uppercase tracking-wide"
-          >
-            {loginMutation.isPending ? (
-              <span className="flex gap-1 items-center">
-                <Spinner /> Зареєструватися
-              </span>
-            ) : (
-              <span>Зареєструватися</span>
-            )}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button type="submit" disabled={registerMutation.isPending} className="w-full">
+              {registerMutation.isPending ? (
+                <span className="flex gap-1 items-center">
+                  <Spinner /> Зареєструватися
+                </span>
+              ) : (
+                'Зареєструватися'
+              )}
+            </Button>
 
-          <span className="block text-sm text-muted-foreground text-center ">
-            Вже маєте акаунт?{' '}
-            <Link
-              to="/signin"
-              className="text-black underline transition-colors ease-in-out duration-150 hover:text-neutral-800"
-            >
-              Увійти
-            </Link>
-          </span>
+            <span className="block text-sm text-muted-foreground text-center">
+              Вже маєте акаунт?{' '}
+              <Link
+                to="/signin"
+                className="text-black underline transition-colors hover:text-neutral-800"
+              >
+                Увійти
+              </Link>
+            </span>
+          </div>
         </form>
       </CardContent>
     </Card>
