@@ -14,3 +14,4 @@ export * from './confirm-dialog';
 export * from './tooltip';
 export * from './chart';
 export * from './field';
+export * from './sidebar';

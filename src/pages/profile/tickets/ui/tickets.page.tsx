@@ -4,8 +4,6 @@ import { lazy } from 'react';
 const UserTicketsPage = () => {
   return (
     <>
-      <h1 className="font-semibold text-2xl mt-3"> Мої заяви</h1>
-
       <UserTicketsTable />
     </>
   );

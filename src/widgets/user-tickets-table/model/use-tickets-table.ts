@@ -43,7 +43,7 @@ export const useTicketsTable = () => {
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     manualPagination: true,
-    rowCount: data?.data?.total ?? 0,
+    rowCount: data?.total ?? 0,
     onPaginationChange: setPagination,
     state: {
       sorting,
