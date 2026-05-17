@@ -24,7 +24,7 @@ export const Header = ({ data }: Props) => {
 
         <ul className="flex items-center gap-3">
           <li>
-            {data && data?.role === 'operator' && (
+            {data && data?.role === 'OPERATOR' && (
               <NavLink
                 className={({ isActive }) =>
                   cn(

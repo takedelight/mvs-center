@@ -18,6 +18,10 @@ export const StatementTableColumns = (): ColumnDef<Statement>[] => {
       accessorKey: 'type',
       header: 'Тип',
     },
+    {
+      accessorKey: 'VIN',
+      header: 'VIN',
+    },
 
     {
       accessorKey: 'status',
