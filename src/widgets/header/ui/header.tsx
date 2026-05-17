@@ -2,16 +2,16 @@ import { Link, NavLink } from 'react-router';
 import { UserRound } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Avatar, AvatarFallback, buttonVariants } from '@/shared/ui';
-import type { User } from '@/entity/user';
+import { useAuth } from '@/core/auth';
 
-interface Props {
-  data?: User;
-}
+export const Header = () => {
+  const {
+    value: { user },
+  } = useAuth();
 
-export const Header = ({ data }: Props) => {
   const getInitials = () => {
-    const first = data?.firstName?.[0]?.toUpperCase() ?? '';
-    const last = data?.lastName?.[0]?.toUpperCase() ?? '';
+    const first = user?.firstName?.[0]?.toUpperCase() ?? '';
+    const last = user?.lastName?.[0]?.toUpperCase() ?? '';
     return `${first}${last}`;
   };
 
@@ -24,7 +24,7 @@ export const Header = ({ data }: Props) => {
 
         <ul className="flex items-center gap-3">
           <li>
-            {data && data?.role === 'OPERATOR' && (
+            {user && user?.role === 'OPERATOR' && (
               <NavLink
                 className={({ isActive }) =>
                   cn(
@@ -40,7 +40,7 @@ export const Header = ({ data }: Props) => {
           </li>
 
           <li>
-            {!data ? (
+            {!user ? (
               <Link className={cn(buttonVariants({ variant: 'ghost' }))} to="/signin">
                 <UserRound className="size-5" />
                 Увійти

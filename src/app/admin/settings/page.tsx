@@ -1,19 +1,22 @@
 import { lazy } from 'react';
-import { useOutletContext } from 'react-router';
-import type { User } from '@/entity/user';
+
 import { GenerateStatements } from '@/features/generate-statements/ui/GenerateStatements';
 import { DeleteAllStatements } from '@/features/delete-all-statements';
+import { useAuth } from '@/core/auth';
 
 const AdminSettingsPage = () => {
-  const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
+  const {
+    value: { user },
+    actions: { refetchProfile },
+  } = useAuth();
 
   return (
     <>
       <h1 className="font-semibold text-2xl mt-3">Налаштування</h1>
 
-      <GenerateStatements userId={user.id} refetch={refetch} />
+      <GenerateStatements userId={user?.id} refetch={refetchProfile} />
 
-      <DeleteAllStatements refetch={refetch} />
+      <DeleteAllStatements refetch={refetchProfile} />
     </>
   );
 };

@@ -1,13 +1,14 @@
-import type { User } from '@/entity/user';
+import { useAuth } from '@/core/auth';
 import { api } from '@/shared/api';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const useCreateTicket = () => {
-  const [user] = useOutletContext<[User, refetch: () => void]>();
+  const {
+    value: { user },
+  } = useAuth();
 
   const [selectedType, setSelectedType] = useState('');
   const [VIN, setVIN] = useState('');
@@ -20,9 +21,9 @@ export const useCreateTicket = () => {
 
   useEffect(() => {
     setUserInfo({
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || '',
     });
   }, [user]);
 

@@ -1,36 +1,29 @@
-import type { User } from '@/entity/user';
-import { api } from '@/shared/api';
+import { useAuth } from '@/core/auth';
 import { Spinner } from '@/shared/ui';
 import { Header } from '@/widgets/header';
-import { useQuery } from '@tanstack/react-query';
 import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
 export const RootLayout = () => {
-  const { data, refetch, isPending, isError } = useQuery<User>({
-    queryKey: ['profile'],
-
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    retry: false,
-
-    queryFn: async () => await api.get('/user/me').then((data) => data.data),
-  });
-
   const navigate = useNavigate();
+
+  const {
+    value: { isPending, user },
+  } = useAuth();
+
   const location = useLocation();
   const isAuthRoute =
     location.pathname.startsWith('/signin') || location.pathname.startsWith('/register');
 
   useEffect(() => {
-    if (!isPending && !isAuthRoute && (isError || !data)) {
+    if (!isPending && !isAuthRoute && !user) {
       navigate('/signin');
     }
-  }, [isError, data, isPending, navigate, isAuthRoute]);
+  }, [isPending, isAuthRoute, user]);
 
   return (
     <div className="flex flex-col h-screen antialiased">
-      <Header data={data} />
+      <Header />
 
       <Suspense
         fallback={
@@ -40,7 +33,7 @@ export const RootLayout = () => {
         }
       >
         <main className="flex-1 bg-neutral-100">
-          <Outlet context={[data, refetch]} />
+          <Outlet />
         </main>
       </Suspense>
 

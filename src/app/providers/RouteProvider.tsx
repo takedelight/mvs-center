@@ -24,13 +24,13 @@ export const RouteProvider = () => {
           <Route path="/signin" element={<LazyLoginPage />} />
           <Route path="/register" element={<LazyRegisterPage />} />
 
-          <Route path="/profile" element={<ProfileLayout />}>
+          {/*<Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<LazyProfilePage />} />
             <Route path="settings" element={<LazyProfileSettings />} />
             <Route path="statements" element={<LazyAllUserStatementsPage />} />
-          </Route>
+          </Route>*/}
 
-          <Route path="/admin" element={<AdminLayout />}>
+          {/*<Route path="/admin" element={<AdminLayout />}>
             <Route path="users" element={<LazyAdminUsersPage />} />
             <Route path="comparison" element={<LazyAdminComparisonPage />} />
             <Route
@@ -42,7 +42,7 @@ export const RouteProvider = () => {
               }
             />
             <Route path="settings" element={<LazyAdminSettingsPage />} />
-          </Route>
+          </Route>*/}
         </Route>
       </Routes>
     </BrowserRouter>
