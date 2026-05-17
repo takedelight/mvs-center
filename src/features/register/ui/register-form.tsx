@@ -27,8 +27,7 @@ export const RegisterForm = () => {
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <FieldSet>
             <FieldGroup>
-              <div className="flex gap-2 items-center">
-                {' '}
+              <div className="grid gap-2 grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor="firstName">Ім'я</FieldLabel>
                   <FieldContent>
@@ -43,6 +42,7 @@ export const RegisterForm = () => {
                     />
                   </FieldContent>
                 </Field>
+
                 <Field>
                   <FieldLabel htmlFor="lastName">Прізвище</FieldLabel>
                   <FieldContent>

@@ -1,11 +1,13 @@
-import type { User } from '@/entity/user';
+import { useAuth } from '@/core/auth';
 import { LogOut } from '@/features/logout';
 import { Avatar, AvatarFallback } from '@/shared/ui';
 import { Mail, Settings, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
-import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
+import { Link, Outlet, useNavigate } from 'react-router';
 export const ProfileLayout = () => {
-  const [user, refetch] = useOutletContext<[User, () => void]>();
+  const {
+    value: { user },
+  } = useAuth();
 
   const navigate = useNavigate();
 
@@ -67,7 +69,7 @@ export const ProfileLayout = () => {
 
         <div className="col-start-2 p-2   col-end-5 ">
           <div className="mx-auto">
-            <Outlet context={[user, refetch]} />
+            <Outlet />
           </div>
         </div>
       </div>

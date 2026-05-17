@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { RootLayout } from '../layout';
 import { LazyLoginPage } from '@/pages/login';
 import { ProfileLayout } from '../profile/layout';
-import { LazyProfilePage } from '../profile/page';
+import { LazyProfilePage } from '@/pages/profile/root';
 import { LazyProfileSettings } from '../profile/settings/page';
 import { AdminLayout } from '../admin/layout';
 import { LazyAdminUsersPage } from '../admin/users/page';
@@ -24,11 +24,11 @@ export const RouteProvider = () => {
           <Route path="/signin" element={<LazyLoginPage />} />
           <Route path="/register" element={<LazyRegisterPage />} />
 
-          {/*<Route path="/profile" element={<ProfileLayout />}>
+          <Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<LazyProfilePage />} />
-            <Route path="settings" element={<LazyProfileSettings />} />
-            <Route path="statements" element={<LazyAllUserStatementsPage />} />
-          </Route>*/}
+            {/*<Route path="settings" element={<LazyProfileSettings />} />
+            <Route path="statements" element={<LazyAllUserStatementsPage />} />*/}
+          </Route>
 
           {/*<Route path="/admin" element={<AdminLayout />}>
             <Route path="users" element={<LazyAdminUsersPage />} />

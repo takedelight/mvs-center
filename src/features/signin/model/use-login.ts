@@ -1,3 +1,4 @@
+import { useAuth } from '@/core/auth';
 import { api } from '@/shared/api';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -11,9 +12,9 @@ export const useLogin = () => {
     password: '',
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, refresh] = useOutletContext<[_: unknown, refresh: () => void]>();
-
+  const {
+    actions: { refetchProfile },
+  } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +33,7 @@ export const useLogin = () => {
     },
     onSuccess: async () => {
       toast.success('Ви увійшли у свій профіль!');
-      await refresh();
+      refetchProfile();
       navigate('/');
     },
     onError: (error) => {
