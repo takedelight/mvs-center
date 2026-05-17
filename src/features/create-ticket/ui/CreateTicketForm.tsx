@@ -30,7 +30,7 @@ export const CreateTicketForm = () => {
   return (
     <Card className="w-150 p-2">
       <CardHeader>
-        <h1 className="text-xl font-bold">Подача заявки</h1>
+        <h1 className="text-xl font-bold">Подача заяви</h1>
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-4">

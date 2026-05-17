@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { LazyHomePage } from '../page';
 import { RootLayout } from '../layout';
-import { LazyLoginPage } from '../login/LoginPage';
+import { LazyLoginPage } from '@/pages/login';
 import { ProfileLayout } from '../profile/layout';
 import { LazyProfilePage } from '../profile/page';
 import { LazyProfileSettings } from '../profile/settings/page';
@@ -9,11 +8,11 @@ import { AdminLayout } from '../admin/layout';
 import { LazyAdminUsersPage } from '../admin/users/page';
 import { LazyAdminStatementsPage } from '../admin/statements/page';
 import { LazyAdminSettingsPage } from '../admin/settings/page';
-import { LazyNotFoundPage } from '../not-found';
 import { LazyAllUserStatementsPage } from '../profile/statements/page';
 import { FilterProvider } from './FilterProvider';
 import { LazyAdminComparisonPage } from '../admin/comparison/page';
-import { LazyRegisterPage } from '../register/page';
+import { LazyHomePage } from '@/pages/home';
+import { LazyRegisterPage } from '@/pages/register';
 
 export const RouteProvider = () => {
   return (
@@ -44,8 +43,6 @@ export const RouteProvider = () => {
             />
             <Route path="settings" element={<LazyAdminSettingsPage />} />
           </Route>
-
-          <Route path="*" element={<LazyNotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

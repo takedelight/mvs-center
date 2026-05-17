@@ -3,7 +3,7 @@ import { lazy } from 'react';
 
 const RegisterPage = () => {
   return (
-    <section className="container flex justify-center items-center h-[88vh] mx-auto px-1">
+    <section className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <RegisterForm />
     </section>
   );
