@@ -1,10 +1,12 @@
-import type { User } from '@/entity/user';
+import { useAuth } from '@/core/auth';
 import { ChartSpline, ClipboardList, Settings, Users } from 'lucide-react';
 import { useEffect } from 'react';
-import { Link, Outlet, useNavigate, useOutletContext } from 'react-router';
+import { Link, Outlet, useNavigate } from 'react-router';
 
 export const AdminLayout = () => {
-  const [user, refetch] = useOutletContext<[User, refetch: () => void]>();
+  const {
+    value: { user },
+  } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export const AdminLayout = () => {
         </ul>
       </aside>
       <div className="col-start-2 p-2  col-end-7">
-        <Outlet context={[user, refetch]} />
+        <Outlet />
       </div>
     </section>
   );

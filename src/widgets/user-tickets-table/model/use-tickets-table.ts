@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnFiltersState,
@@ -18,37 +17,40 @@ export const useTicketsTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
 
   const columns = useMemo(() => UserTicketsTableColumns(), []);
 
-  const { data = [] } = useQuery<Ticket[]>({
-    queryKey: ['user-tickets'],
+  const { data } = useQuery<{ data: Ticket[]; total: number }>({
+    queryKey: ['user-tickets', pagination.pageIndex, pagination.pageSize],
     refetchOnWindowFocus: false,
-    queryFn: async () => await api.get('/ticket').then((data) => data.data),
+    queryFn: async () =>
+      await api
+        .get(`/ticket?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`)
+        .then((res) => res.data),
   });
 
+  console.log(data);
+
   const table = useReactTable({
-    data,
+    data: data?.data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    manualPagination: true,
+    rowCount: data?.data?.total ?? 0,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 15,
-      },
+      pagination,
     },
   });
 

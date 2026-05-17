@@ -1,9 +1,9 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Statement } from '../model/ticket.type';
+import type { Ticket } from '../model/ticket.type';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui';
 import { CircleQuestionMark } from 'lucide-react';
 
-export const UserTicketsTableColumns = (): ColumnDef<Statement>[] => {
+export const UserTicketsTableColumns = (): ColumnDef<Ticket>[] => {
   return [
     {
       accessorKey: 'id',
@@ -67,14 +67,14 @@ export const UserTicketsTableColumns = (): ColumnDef<Statement>[] => {
         const status = row.getValue<string>('status');
 
         return (
-          <div className="normal-case">
+          <div className="SUCCESS">
             {status === 'Виконано' && (
               <span className="text-green-700 font-semibold">Виконано</span>
             )}
-            {status === 'Відхилено' && (
+            {status === 'REJECT' && (
               <span className="text-red-500 font-semibold">Відхилено</span>
             )}
-            {status === 'В обробці' && (
+            {status === 'PENDING' && (
               <span className="text-yellow-600 font-semibold">В обробці</span>
             )}
           </div>

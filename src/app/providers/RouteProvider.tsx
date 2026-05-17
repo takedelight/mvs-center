@@ -7,12 +7,12 @@ import { LazyProfileSettings } from '@/pages/profile/settings';
 import { AdminLayout } from '../admin/layout';
 import { LazyAdminUsersPage } from '../admin/users/page';
 import { LazyAdminStatementsPage } from '../admin/statements/page';
-import { LazyAdminSettingsPage } from '../admin/settings/page';
 import { FilterProvider } from './FilterProvider';
 import { LazyAdminComparisonPage } from '../admin/comparison/page';
 import { LazyHomePage } from '@/pages/home';
 import { LazyRegisterPage } from '@/pages/register';
 import { LazyUserTicketsPage } from '@/pages/profile/tickets';
+import { LazyAdminSettingsPage } from '@/pages/admin/settings';
 
 export const RouteProvider = () => {
   return (
@@ -30,8 +30,8 @@ export const RouteProvider = () => {
             <Route path="tickets" element={<LazyUserTicketsPage />} />
           </Route>
 
-          {/*<Route path="/admin" element={<AdminLayout />}>
-            <Route path="users" element={<LazyAdminUsersPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            {/*<Route path="users" element={<LazyAdminUsersPage />} />
             <Route path="comparison" element={<LazyAdminComparisonPage />} />
             <Route
               path="statements"
@@ -40,9 +40,9 @@ export const RouteProvider = () => {
                   <LazyAdminStatementsPage />
                 </FilterProvider>
               }
-            />
+            />*/}
             <Route path="settings" element={<LazyAdminSettingsPage />} />
-          </Route>*/}
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

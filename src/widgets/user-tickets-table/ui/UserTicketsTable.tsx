@@ -6,7 +6,7 @@ export const UserTicketsTable = () => {
   const { table, columns } = useTicketsTable();
 
   return (
-    <div className="mt-3 border flex flex-col  h-[700px] justify-between">
+    <div className="mt-3 border flex flex-col  h-175 justify-between">
       <div className="flex-1 overflow-auto">
         <Table className="w-full">
           <TableHeader>
