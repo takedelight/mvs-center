@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from '@/shared/ui';
 import { Mail, Settings, UserRoundPen } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router';
+
 export const ProfileLayout = () => {
   const {
     value: { user },
@@ -49,7 +50,7 @@ export const ProfileLayout = () => {
             <li>
               <Link
                 className="transition-colors p-4 ease-in-out duration-150 hover:bg-secondary flex items-center gap-2"
-                to="/profile/statements"
+                to="/profile/tickets"
               >
                 <Mail /> Мої заявки
               </Link>

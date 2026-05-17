@@ -19,7 +19,7 @@ export const RegisterForm = () => {
   const { handleChange, isPending, handleSubmit, inputValues, isDisabled } = useRegister();
 
   return (
-    <Card className="w-[500px]">
+    <Card className="w-125">
       <CardHeader>
         <CardTitle>Реєстрація нового користувача</CardTitle>
       </CardHeader>

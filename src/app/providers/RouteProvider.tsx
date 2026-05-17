@@ -3,16 +3,16 @@ import { RootLayout } from '../layout';
 import { LazyLoginPage } from '@/pages/login';
 import { ProfileLayout } from '../profile/layout';
 import { LazyProfilePage } from '@/pages/profile/root';
-import { LazyProfileSettings } from '../profile/settings/page';
+import { LazyProfileSettings } from '@/pages/profile/settings';
 import { AdminLayout } from '../admin/layout';
 import { LazyAdminUsersPage } from '../admin/users/page';
 import { LazyAdminStatementsPage } from '../admin/statements/page';
 import { LazyAdminSettingsPage } from '../admin/settings/page';
-import { LazyAllUserStatementsPage } from '../profile/statements/page';
 import { FilterProvider } from './FilterProvider';
 import { LazyAdminComparisonPage } from '../admin/comparison/page';
 import { LazyHomePage } from '@/pages/home';
 import { LazyRegisterPage } from '@/pages/register';
+import { LazyUserTicketsPage } from '@/pages/profile/tickets';
 
 export const RouteProvider = () => {
   return (
@@ -26,8 +26,8 @@ export const RouteProvider = () => {
 
           <Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<LazyProfilePage />} />
-            {/*<Route path="settings" element={<LazyProfileSettings />} />
-            <Route path="statements" element={<LazyAllUserStatementsPage />} />*/}
+            <Route path="settings" element={<LazyProfileSettings />} />
+            <Route path="tickets" element={<LazyUserTicketsPage />} />
           </Route>
 
           {/*<Route path="/admin" element={<AdminLayout />}>

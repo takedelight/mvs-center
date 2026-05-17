@@ -1,8 +1,9 @@
+import { useAuth } from '@/core/auth';
 import { api } from '@/shared/api';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { useNavigate, useOutletContext } from 'react-router';
+import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
 export const useRegister = () => {
@@ -13,8 +14,9 @@ export const useRegister = () => {
     password: '',
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, refresh] = useOutletContext<[unknown, () => Promise<void> | void]>();
+  const {
+    actions: { refetchProfile },
+  } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +32,7 @@ export const useRegister = () => {
     },
     onSuccess: async () => {
       toast.success('Ви успішно зареєструвалися!');
-      await refresh();
+      refetchProfile();
       navigate('/');
     },
     onError: (error) => {

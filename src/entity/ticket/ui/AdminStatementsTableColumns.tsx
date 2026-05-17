@@ -1,5 +1,5 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import type { AdminStatementItem } from '../model/statement.type';
+import type { AdminStatementItem } from '../model/ticket.type';
 import {
   Button,
   DropdownMenu,

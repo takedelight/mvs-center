@@ -21,7 +21,7 @@ import {
 } from '@/shared/ui';
 import { CircleQuestionMark } from 'lucide-react';
 import { useCreateTicket } from '../model/use-create-ticket';
-import { TICKET_TYPES } from '@/entity/statement';
+import { TICKET_TYPES } from '@/entity/ticket';
 
 export const CreateTicketForm = () => {
   const { createTicketMutation, selectedType, setSelectedType, VIN, setVIN, userInfo, isPending } =

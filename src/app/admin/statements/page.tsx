@@ -1,4 +1,4 @@
-import { AdminStatementTableColumns } from '@/entity/statement';
+import { AdminStatementTableColumns } from '@/entity/ticket';
 import { StatementsFilter } from '@/features/statements-filter';
 import { useFilter } from '@/features/statements-filter/hooks/useFilter';
 import { api } from '@/shared/api';
