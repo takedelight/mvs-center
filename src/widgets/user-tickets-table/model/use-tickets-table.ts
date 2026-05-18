@@ -17,7 +17,7 @@ export const useTicketsTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 18 });
 
   const columns = useMemo(() => UserTicketsTableColumns(), []);
 

@@ -1,170 +1,180 @@
-import { AdminStatementTableColumns } from '@/entity/ticket';
-import { StatementsFilter } from '@/features/statements-filter';
-import { useFilter } from '@/features/statements-filter/hooks/useFilter';
+import { lazy, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { Inbox } from 'lucide-react';
+
 import { api } from '@/shared/api';
 import {
-  Spinner,
+  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+  Spinner,
 } from '@/shared/ui';
-import { useQuery } from '@tanstack/react-query';
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  type PaginationState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { lazy, useMemo, useState } from 'react';
+import { AdminStatementTableColumns, type AdminStatementItem } from '@/entity/ticket';
+import { StatementsFilter } from '@/features/statements-filter';
 
-const AllStatementsPage = () => {
-  const { order, searchValue, sortKey } = useFilter();
+interface Response {
+  data: AdminStatementItem[];
+  lastPage: number;
+  total: number;
+}
 
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+export const AdminStatementsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortBy = searchParams.get('sort_by') || 'createdAt';
+  const sortOrder = (searchParams.get('sort_order') as 'asc' | 'desc') || 'desc';
+
+  const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 11,
+    pageSize: 14,
   });
 
-  const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize],
-  );
+  const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
 
-  const { data, refetch, isLoading } = useQuery({
-    queryKey: ['allStatements', order, searchValue, sortKey.value, pageIndex, pageSize],
+  const statusFilter = searchParams.get('status') || 'all';
+  const searchValue = searchParams.get('q') || '';
+  const { data, refetch, isPending } = useQuery<Response>({
+    queryKey: ['admin-statements', searchValue, sortBy, sortOrder],
     refetchOnWindowFocus: false,
-    placeholderData: (prev) => prev,
-    initialData: {
-      data: {
-        result: [],
-        time: 0,
-        operations: 0,
-      },
-      total: 0,
-      page: 1,
-      lastPage: 0,
-    },
-    queryFn: async () =>
+    queryFn: () =>
       api
-        .get('ticket/all', {
+        .get('/ticket/', {
           params: {
-            order,
-            q: searchValue,
-            sort_by: sortKey.value,
-            page: pageIndex + 1,
+            status: statusFilter,
+            search: searchValue || undefined,
+            sortBy,
+            sortOrder,
             limit: pageSize,
+            page: pageIndex + 1,
           },
         })
         .then((res) => res.data),
   });
 
-  const columns = useMemo(() => AdminStatementTableColumns({ refetch }), [refetch]);
+  const handleSort = (field: string, order: 'asc' | 'desc' | null) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (!order) {
+      nextParams.delete('sort_by');
+      nextParams.delete('sort_order');
+    } else {
+      nextParams.set('sort_by', field);
+      nextParams.set('sort_order', order);
+    }
+    setSearchParams(nextParams);
+  };
 
+  const columns = useMemo(
+    () =>
+      AdminStatementTableColumns({
+        refetch,
+        sortBy,
+        sortOrder,
+        onSort: handleSort,
+      }),
+    [refetch, sortBy, sortOrder],
+  );
+
+  console.log(data);
+
+  // Конфігурація таблиці (БЕЗ getSortedRowModel, бо сортує сервер)
   const table = useReactTable({
-    data: data?.data?.result ?? [],
+    data: data?.data ?? [],
     columns,
-    pageCount: data?.lastPage ?? -1,
+    pageCount: Math.ceil(data?.total / pageSize) || 1,
     state: {
       pagination,
     },
     onPaginationChange: setPagination,
-    manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
   });
 
   return (
-    <>
-      <h1 className="font-semibold text-2xl mt-3">Всі заявки</h1>
-
+    <div className="mt-3  rounded-lg flex flex-col  h-[85vh] justify-between bg-background ">
       <StatementsFilter />
+      <div className="flex-1 overflow-auto border rounded-md relative">
+        <Table className="w-full border-collapse">
+          <TableHeader>
+            {table.getHeaderGroups().map((headersGroup) => (
+              <TableRow key={headersGroup.id}>
+                {headersGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="font-semibold text-foreground ">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
 
-      <div className="mt-2 border flex flex-col h-[650px]">
-        <div className="flex-1 overflow-auto">
-          <Table className="w-full">
-            <TableHeader>
-              {table.getHeaderGroups().map((headersGroup) => (
-                <TableRow key={headersGroup.id}>
-                  {headersGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
+          <TableBody>
+            {isPending ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-[80vh] text-center">
+                  <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                    <Spinner className="size-7" />
+                    <span className="text-sm font-medium">Завантаження заяв...</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className=" align-middle">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-72 text-center">
+                  <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                    <Inbox className="size-8 " />
+                    <span className="text-sm font-medium">Немає заяв</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-            <TableBody>
-              {isLoading && (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    <Spinner />
-                  </TableCell>
-                </TableRow>
-              )}
+      <div className="flex items-center justify-between mt-2">
+        <span className="text-sm text-muted-foreground font-medium">
+          Сторінка {table.getState().pagination.pageIndex + 1} з {Math.max(1, table.getPageCount())}
+        </span>
 
-              {!isLoading && table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : !isLoading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-[540px] text-center align-middle text-muted-foreground"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              ) : null}
-            </TableBody>
-          </Table>
-        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage() || isPending}
+          >
+            Попередня
+          </Button>
 
-        <div className="flex items-center justify-between border-t p-4 bg-white">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-700">
-              Сторінка {table.getState().pagination.pageIndex + 1} з{' '}
-              {table.getPageCount().toLocaleString()}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Попередня
-            </button>
-            <button
-              className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-100"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Наступна
-            </button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage() || isPending}
+          >
+            Наступна
+          </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
-
-export const LazyAdminStatementsPage = lazy(() => Promise.resolve({ default: AllStatementsPage }));
+export const LazyAdminStatementsPage = lazy(() =>
+  Promise.resolve({ default: AdminStatementsPage }),
+);

@@ -1,36 +1,38 @@
-import {
-  Button,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/shared/ui';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '@/shared/ui';
 import { SearchBar } from './SearchBar';
-import { ArrowUpDown } from 'lucide-react';
+import { useSearchParams } from 'react-router';
 import { SORT_KEYS } from '@/shared/constants';
-import { useFilter } from '../hooks/useFilter';
 
 export const StatementsFilter = () => {
-  const { setOrder, sortKey, setSortKey } = useFilter();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentStatusValue = searchParams.get('status') || 'all';
+  const currentStatusItem =
+    SORT_KEYS.find((item) => item.value === currentStatusValue) || SORT_KEYS[2];
+
+  const handleStatusChange = (value: string) => {
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (value === 'all') {
+      nextParams.delete('status');
+    } else {
+      nextParams.set('status', value);
+    }
+
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
 
   return (
-    <div className="flex mt-5 items-center justify-between">
+    <div className="flex mb-2 items-center justify-between">
       <SearchBar />
 
       <ul className="flex items-center gap-3">
         <li>
-          <Select
-            value={sortKey.value}
-            onValueChange={(value) => {
-              const found = SORT_KEYS.find((item) => item.value === value);
-              if (found) setSortKey(found);
-            }}
-          >
-            <SelectTrigger className="w-40">{sortKey.alias}</SelectTrigger>
+          <Select value={currentStatusValue} onValueChange={handleStatusChange}>
+            <SelectTrigger className="w-40">
+              {currentStatusItem ? currentStatusItem.alias : 'Всі'}
+            </SelectTrigger>
 
             <SelectContent>
               <SelectGroup>
@@ -42,22 +44,6 @@ export const StatementsFilter = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-        </li>
-
-        <li>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => setOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
-                variant="ghost"
-              >
-                <ArrowUpDown />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Сортувати за датою створення</p>
-            </TooltipContent>
-          </Tooltip>
         </li>
       </ul>
     </div>

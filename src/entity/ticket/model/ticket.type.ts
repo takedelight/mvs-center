@@ -1,4 +1,4 @@
-export type TicketStatus = 'Виконано' | 'Відхилено' | 'В обробці';
+export type TicketStatus = 'SUCCESS' | 'REJECT' | 'PENDING';
 
 export interface Ticket {
   id: number;
@@ -10,4 +10,8 @@ export interface Ticket {
 export interface AdminStatementItem extends Ticket {
   firstName: string;
   lastName: string;
+  user: {
+    firstName: string;
+    lastName: string;
+  };
 }

@@ -7,6 +7,7 @@ import { LazyRegisterPage } from '@/pages/register';
 import { LazyUserTicketsPage } from '@/pages/profile/tickets';
 import { LazyAdminSettingsPage } from '@/pages/admin/settings';
 import { LazyAdminUsersPage } from '@/pages/admin/users';
+import { LazyAdminStatementsPage } from '../admin/statements/page';
 
 export const RouteProvider = () => {
   return (
@@ -25,15 +26,8 @@ export const RouteProvider = () => {
 
           <Route path="/admin">
             <Route path="users" element={<LazyAdminUsersPage />} />
-            {/*<Route path="comparison" element={<LazyAdminComparisonPage />} />
-            <Route
-              path="statements"
-              element={
-                <FilterProvider>
-                  <LazyAdminStatementsPage />
-                </FilterProvider>
-              }
-            />*/}
+            {/*<Route path="comparison" element={<LazyAdminComparisonPage />} />*/}
+            <Route path="tickets" element={<LazyAdminStatementsPage />} />
             <Route path="settings" element={<LazyAdminSettingsPage />} />
           </Route>
         </Route>
