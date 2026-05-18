@@ -41,7 +41,7 @@ export const Comparison = () => {
   const [algorithms, setAlgorithms] = useState<string[]>(algorithmsParam);
 
   const canCompare = algorithms.length >= 2;
-  
+
   useEffect(() => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('quantity', String(debouncedQuantity));

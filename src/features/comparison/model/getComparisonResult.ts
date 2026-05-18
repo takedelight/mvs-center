@@ -4,7 +4,7 @@ export const getComparisonResult = async (quantity: number, algorithms: string[]
   const response = await api.get(`ticket/comparison`, {
     params: {
       quantity,
-      algs: algorithms,
+      alg: algorithms,
     },
     paramsSerializer: { indexes: null },
   });
