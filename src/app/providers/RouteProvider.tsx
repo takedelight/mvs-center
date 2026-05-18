@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { Route, Routes } from 'react-router';
 import { RootLayout } from '../layout';
 import { LazyLoginPage } from '@/pages/login';
 import { LazyProfilePage } from '@/pages/profile/root';
@@ -12,27 +12,25 @@ import { LazyAdminComparisonPage } from '../admin/comparison/page';
 
 export const RouteProvider = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<RootLayout />}>
-          <Route index element={<LazyHomePage />} />
+    <Routes>
+      <Route element={<RootLayout />}>
+        <Route index element={<LazyHomePage />} />
 
-          <Route path="/signin" element={<LazyLoginPage />} />
-          <Route path="/register" element={<LazyRegisterPage />} />
+        <Route path="/signin" element={<LazyLoginPage />} />
+        <Route path="/register" element={<LazyRegisterPage />} />
 
-          <Route path="/profile">
-            <Route index element={<LazyProfilePage />} />
-            <Route path="tickets" element={<LazyUserTicketsPage />} />
-          </Route>
-
-          <Route path="/admin">
-            <Route path="users" element={<LazyAdminUsersPage />} />
-            <Route path="comparison" element={<LazyAdminComparisonPage />} />
-            <Route path="tickets" element={<LazyAdminStatementsPage />} />
-            <Route path="settings" element={<LazyAdminSettingsPage />} />
-          </Route>
+        <Route path="/profile">
+          <Route index element={<LazyProfilePage />} />
+          <Route path="tickets" element={<LazyUserTicketsPage />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+
+        <Route path="/admin">
+          <Route path="users" element={<LazyAdminUsersPage />} />
+          <Route path="comparison" element={<LazyAdminComparisonPage />} />
+          <Route path="tickets" element={<LazyAdminStatementsPage />} />
+          <Route path="settings" element={<LazyAdminSettingsPage />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 };

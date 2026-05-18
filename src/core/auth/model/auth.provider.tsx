@@ -1,34 +1,54 @@
 import type { User } from '@/entity/user';
 import { AuthContext } from './auth.context';
 import { api } from '@/shared/api';
-import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const { refetch: refetchProfile, isPending } = useQuery<User>({
+  const {
+    data: user,
+    refetch: refetchProfile,
+    isPending,
+  } = useQuery<User>({
     queryKey: ['profile'],
     refetchOnWindowFocus: false,
     gcTime: 0,
     retry: false,
-
     queryFn: async () => {
-      const data = await api.get('/user/me').then((data) => data.data);
-      setUser(data);
+      return api.get('/user/me').then((res) => res.data);
+    },
+  });
 
-      return data;
+  const { mutate: handleLogout } = useMutation({
+    mutationKey: ['logout'],
+    mutationFn: async () => {
+      await api.post('auth/logout', {}, { withCredentials: true });
+    },
+    onSuccess: async () => {
+      toast.success('Ви вийшли зі свого облікового запису.');
+
+      await queryClient.cancelQueries();
+      queryClient.clear();
+
+      navigate('/signin');
+    },
+    onError: () => {
+      toast.error('Помилка при виході');
     },
   });
 
   const login = () => {};
   const register = () => {};
-  const logout = () => {};
 
   const values = useMemo(
     () => ({
       value: {
-        user,
+        user: user ?? null,
         isAuthenticated: !!user,
         isPending,
       },
@@ -36,10 +56,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         register,
         refetchProfile,
-        logout,
+        logout: handleLogout,
       },
     }),
-    [user],
+    [user, isPending, handleLogout],
   );
 
   return <AuthContext value={values}>{children}</AuthContext>;

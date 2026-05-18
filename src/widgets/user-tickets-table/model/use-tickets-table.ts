@@ -33,7 +33,7 @@ export const useTicketsTable = () => {
   console.log(data);
 
   const table = useReactTable({
-    data: data?.data ?? [],
+    data: data?.result.result ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

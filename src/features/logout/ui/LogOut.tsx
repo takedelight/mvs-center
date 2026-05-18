@@ -1,36 +1,16 @@
-import { api } from '@/shared/api';
+import { useAuth } from '@/core/auth';
 import { Button } from '@/shared/ui';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
-import { toast } from 'react-toastify';
+
 import { LogOut as LogOutIcon } from 'lucide-react';
 
 export const LogOut = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const logoutMutation = useMutation({
-    mutationKey: ['logout'],
-    mutationFn: async () => {
-      await api.post('auth/logout', {}, { withCredentials: true });
-    },
-    onSuccess: async () => {
-      toast.success('Ви вийшли зі свого облікового запису.');
-
-      await queryClient.cancelQueries();
-      queryClient.clear();
-
-      navigate('/');
-    },
-    onError: () => {
-      toast.error('Помилка при виході');
-    },
-  });
+  const {
+    actions: { logout },
+  } = useAuth();
 
   return (
     <Button
-      onClick={() => logoutMutation.mutate()}
-      disabled={logoutMutation.isPending}
+      onClick={logout}
       variant="ghost"
       className="mt-auto w-full justify-start gap-2 rounded-none p-4 text-lg text-red-500 hover:bg-red-50 hover:text-red-600"
     >
