@@ -1,15 +1,14 @@
 export const SORT_KEYS = [
   {
     alias: 'Виконані',
-    value: 'completed',
+    value: 'SUCCESS',
   },
   {
     alias: 'Відхилені',
-    value: 'rejected',
+    value: 'REJECT',
   },
   {
     alias: 'В обробці',
-    value: 'pending',
+    value: 'PENDING',
   },
 ];
-

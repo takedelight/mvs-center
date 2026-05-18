@@ -8,7 +8,7 @@ export const Header = () => {
     if (path === '/') return '';
     if (path.startsWith('/profile/tickets')) return 'Мої заявки';
     if (path.startsWith('/profile')) return 'Особистий кабінет';
-    if (path.startsWith('/admin/comprare')) return 'Порівняння алгоритмів';
+    if (path.startsWith('/admin/comparison')) return 'Порівняння алгоритмів сортування';
     if (path.startsWith('/admin/tickets')) return 'Керування заявками';
     if (path.startsWith('/admin/user')) return 'Керування користувачами';
     if (path.startsWith('/admin/settings')) return 'Налаштування';

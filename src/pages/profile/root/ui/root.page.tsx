@@ -5,9 +5,7 @@ import { lazy } from 'react';
 const ProfilePage = () => {
   return (
     <>
-      <div className="mt-5 border p-2 rounded-md">
-        <h2 className="font-semibold">Особисті дані:</h2>
-
+      <div className="mt-3 border p-2 rounded-md">
         <UpdateForm />
       </div>
     </>

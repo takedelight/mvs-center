@@ -27,7 +27,7 @@ const navigationItems = [
 const operatorItems = [
   { title: 'Заявки', url: '/admin/tickets', icon: FileText },
   { title: 'Користувачі', url: '/admin/users', icon: Users },
-  { title: 'Порівняння', url: '/admin/compare', icon: ChartLine },
+  { title: 'Порівняння', url: '/admin/comparison', icon: ChartLine },
   { title: 'Налаштування', url: '/admin/settings', icon: Settings },
 ];
 

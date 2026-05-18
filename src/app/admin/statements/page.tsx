@@ -19,7 +19,9 @@ import { AdminStatementTableColumns, type AdminStatementItem } from '@/entity/ti
 import { StatementsFilter } from '@/features/statements-filter';
 
 interface Response {
-  data: AdminStatementItem[];
+  result: {
+    result: AdminStatementItem[];
+  };
   lastPage: number;
   total: number;
 }
@@ -38,15 +40,16 @@ export const AdminStatementsPage = () => {
 
   const statusFilter = searchParams.get('status') || 'all';
   const searchValue = searchParams.get('q') || '';
+
   const { data, refetch, isPending } = useQuery<Response>({
-    queryKey: ['admin-statements', searchValue, sortBy, sortOrder],
+    queryKey: ['admin-tickets', statusFilter, searchValue, pageSize, pageIndex, sortBy, sortOrder],
     refetchOnWindowFocus: false,
     queryFn: () =>
       api
         .get('/ticket/', {
           params: {
             status: statusFilter,
-            search: searchValue || undefined,
+            q: searchValue || undefined,
             sortBy,
             sortOrder,
             limit: pageSize,
@@ -57,7 +60,8 @@ export const AdminStatementsPage = () => {
   });
 
   const handleSort = (field: string, order: 'asc' | 'desc' | null) => {
-    const nextParams = new URLSearchParams(searchParams);
+    const nextParams = new URLSearchParams(window.location.search);
+
     if (!order) {
       nextParams.delete('sort_by');
       nextParams.delete('sort_order');
@@ -65,6 +69,8 @@ export const AdminStatementsPage = () => {
       nextParams.set('sort_by', field);
       nextParams.set('sort_order', order);
     }
+
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     setSearchParams(nextParams);
   };
 
@@ -79,13 +85,10 @@ export const AdminStatementsPage = () => {
     [refetch, sortBy, sortOrder],
   );
 
-  console.log(data);
-
-  // Конфігурація таблиці (БЕЗ getSortedRowModel, бо сортує сервер)
   const table = useReactTable({
-    data: data?.data ?? [],
+    data: data?.result?.result ?? [],
     columns,
-    pageCount: Math.ceil(data?.total / pageSize) || 1,
+    pageCount: Math.ceil((data?.total ?? 0) / pageSize) || 1,
     state: {
       pagination,
     },
@@ -95,7 +98,7 @@ export const AdminStatementsPage = () => {
   });
 
   return (
-    <div className="mt-3  rounded-lg flex flex-col  h-[85vh] justify-between bg-background ">
+    <div className="mt-3 rounded-lg flex flex-col h-[85vh] justify-between bg-background p-1">
       <StatementsFilter />
       <div className="flex-1 overflow-auto border rounded-md relative">
         <Table className="w-full border-collapse">
@@ -103,7 +106,7 @@ export const AdminStatementsPage = () => {
             {table.getHeaderGroups().map((headersGroup) => (
               <TableRow key={headersGroup.id}>
                 {headersGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="font-semibold text-foreground ">
+                  <TableHead key={header.id} className="font-semibold text-foreground">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -127,7 +130,7 @@ export const AdminStatementsPage = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className=" align-middle">
+                    <TableCell key={cell.id} className="align-middle">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -137,7 +140,7 @@ export const AdminStatementsPage = () => {
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-72 text-center">
                   <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                    <Inbox className="size-8 " />
+                    <Inbox className="size-8" />
                     <span className="text-sm font-medium">Немає заяв</span>
                   </div>
                 </TableCell>
@@ -175,6 +178,7 @@ export const AdminStatementsPage = () => {
     </div>
   );
 };
+
 export const LazyAdminStatementsPage = lazy(() =>
   Promise.resolve({ default: AdminStatementsPage }),
 );
