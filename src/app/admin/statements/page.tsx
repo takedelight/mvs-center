@@ -28,18 +28,19 @@ interface Response {
 
 export const AdminStatementsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const sortBy = searchParams.get('sort_by') || 'createdAt';
   const sortOrder = (searchParams.get('sort_order') as 'asc' | 'desc') || 'desc';
+  const statusFilter = searchParams.get('status') || 'all';
+  const searchValue = searchParams.get('q') || '';
 
+  // Возвращаем локальное состояние для пагинации (из URL убрано)
   const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
     pageSize: 14,
   });
 
   const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
-
-  const statusFilter = searchParams.get('status') || 'all';
-  const searchValue = searchParams.get('q') || '';
 
   const { data, refetch, isPending } = useQuery<Response>({
     queryKey: ['admin-tickets', statusFilter, searchValue, pageSize, pageIndex, sortBy, sortOrder],
@@ -60,18 +61,17 @@ export const AdminStatementsPage = () => {
   });
 
   const handleSort = (field: string, order: 'asc' | 'desc' | null) => {
-    const nextParams = new URLSearchParams(window.location.search);
-
-    if (!order) {
-      nextParams.delete('sort_by');
-      nextParams.delete('sort_order');
-    } else {
-      nextParams.set('sort_by', field);
-      nextParams.set('sort_order', order);
-    }
-
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    setSearchParams(nextParams);
+    setSearchParams((prevParams) => {
+      const nextParams = new URLSearchParams(prevParams);
+      if (!order) {
+        nextParams.delete('sort_by');
+        nextParams.delete('sort_order');
+      } else {
+        nextParams.set('sort_by', field);
+        nextParams.set('sort_order', order);
+      }
+      return nextParams;
+    });
   };
 
   const columns = useMemo(
@@ -92,7 +92,8 @@ export const AdminStatementsPage = () => {
     state: {
       pagination,
     },
-    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
+    onPaginationChange: setPagination, // Просто обновляем локальный стейт без трогания URL
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
   });

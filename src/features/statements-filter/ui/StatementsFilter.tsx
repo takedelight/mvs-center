@@ -19,7 +19,6 @@ export const StatementsFilter = () => {
       nextParams.set('status', value);
     }
 
-    nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
 

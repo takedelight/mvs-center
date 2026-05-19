@@ -12,17 +12,21 @@ export const SearchBar = () => {
   }, [params]);
 
   useEffect(() => {
-    const nextParams = new URLSearchParams(params);
-
-    if (searchValue) {
-      nextParams.set('q', searchValue);
-      nextParams.set('page', '1');
-    } else {
-      nextParams.delete('q');
-    }
-
-    setParams(nextParams);
-  }, [searchValue, setParams, params]);
+    setParams((prevParams) => {
+      const nextParams = new URLSearchParams(prevParams);
+      const current = nextParams.get('q') ?? '';
+      if (searchValue) {
+        if (current !== searchValue) {
+          nextParams.set('q', searchValue);
+          nextParams.set('page', '1');
+        }
+      } else if (current) {
+        nextParams.delete('q');
+        nextParams.set('page', '1');
+      }
+    return nextParams;
+    });
+  }, [searchValue, setParams]);
 
   return (
     <div className="relative border w-100 px-1 rounded-sm">
