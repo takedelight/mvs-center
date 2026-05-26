@@ -9,6 +9,7 @@ import { LazyAdminSettingsPage } from '@/pages/admin/settings';
 import { LazyAdminUsersPage } from '@/pages/admin/users';
 import { LazyAdminStatementsPage } from '../admin/statements/page';
 import { LazyAdminComparisonPage } from '../admin/comparison/page';
+import { LazyCarsPage } from '@/pages/profile/car';
 
 export const RouteProvider = () => {
   return (
@@ -22,6 +23,7 @@ export const RouteProvider = () => {
         <Route path="/profile">
           <Route index element={<LazyProfilePage />} />
           <Route path="tickets" element={<LazyUserTicketsPage />} />
+          <Route path="car" element={<LazyCarsPage />} />
         </Route>
 
         <Route path="/admin">

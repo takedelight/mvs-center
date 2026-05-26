@@ -16,7 +16,7 @@ import {
   Spinner,
 } from '@/shared/ui';
 import { Header } from '@/widgets/header';
-import { Home, User, FileText, Users, Settings, ChartLine, ShieldCheck } from 'lucide-react';
+import { Home, User, FileText, Users, Settings, ChartLine, ShieldCheck, Car } from 'lucide-react';
 import { Suspense, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 
@@ -24,6 +24,7 @@ const navigationItems = [
   { title: 'Головна', url: '/', icon: Home },
   { title: 'Мій профіль', url: '/profile', icon: User },
   { title: 'Мої заявки', url: '/profile/tickets', icon: FileText },
+  { title: 'Мої авто', url: '/profile/car', icon: Car },
 ];
 
 const operatorItems = [
@@ -164,7 +165,7 @@ export const RootLayout = () => {
         </Suspense>
 
         {/*<footer className="container mx-auto px-1 py-2 text-center text-sm font-semibold border-t-0 opacity-0 select-none pointer-events-none h-0 p-0 overflow-hidden">
-       
+
         </footer>*/}
       </SidebarInset>
     </SidebarProvider>

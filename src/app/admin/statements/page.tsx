@@ -27,8 +27,8 @@ interface ApiResponse {
     };
   };
   total: number;
-  page: number;
-  lastPage: number;
+  page: 1;
+  lastPage: 1110;
 }
 export const AdminStatementsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
