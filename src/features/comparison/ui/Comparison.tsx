@@ -171,13 +171,7 @@ export const Comparison = () => {
                     content={<ChartTooltipContent />}
                     cursor={{ stroke: 'var(--border)', strokeWidth: 1, strokeDasharray: '4 4' }}
                   />
-                  <Legend
-                    verticalAlign="top"
-                    height={40}
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{ className: 'text-xs font-medium pb-4' }}
-                  />
+                  <Legend verticalAlign="top" height={40} iconType="circle" iconSize={8} />
                   <Line
                     yAxisId="left"
                     type="monotone"

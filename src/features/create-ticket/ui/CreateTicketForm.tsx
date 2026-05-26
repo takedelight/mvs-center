@@ -82,6 +82,22 @@ export const CreateTicketForm = () => {
           </Field>
 
           <Field>
+            <FieldLabel>Тип заяви</FieldLabel>
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Оберіть тип послуги" />
+              </SelectTrigger>
+              <SelectContent>
+                {TICKET_TYPES.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+
+          <Field>
             <FieldLabel htmlFor="vin" className="flex gap-1 items-center">
               VIN-номер
               <Tooltip>
@@ -103,22 +119,6 @@ export const CreateTicketForm = () => {
                 name="vin"
               />
             </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel>Тип заяви</FieldLabel>
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Оберіть тип послуги" />
-              </SelectTrigger>
-              <SelectContent>
-                {TICKET_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </Field>
 
           <Button
