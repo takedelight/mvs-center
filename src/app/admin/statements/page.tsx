@@ -18,14 +18,18 @@ import {
 import { AdminStatementTableColumns, type AdminStatementItem } from '@/entity/ticket';
 import { StatementsFilter } from '@/features/statements-filter';
 
-interface Response {
+interface ApiResponse {
   result: {
-    result: AdminStatementItem[];
+    __type: string;
+    size: number;
+    state: {
+      heap: AdminStatementItem[];
+    };
   };
-  lastPage: number;
   total: number;
+  page: number;
+  lastPage: number;
 }
-
 export const AdminStatementsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -34,7 +38,6 @@ export const AdminStatementsPage = () => {
   const statusFilter = searchParams.get('status') || 'all';
   const searchValue = searchParams.get('q') || '';
 
-  // Возвращаем локальное состояние для пагинации (из URL убрано)
   const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
     pageSize: 14,
@@ -42,12 +45,12 @@ export const AdminStatementsPage = () => {
 
   const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
 
-  const { data, refetch, isPending } = useQuery<Response>({
+  const { data, refetch, isPending } = useQuery<ApiResponse>({
     queryKey: ['admin-tickets', statusFilter, searchValue, pageSize, pageIndex, sortBy, sortOrder],
     refetchOnWindowFocus: false,
     queryFn: () =>
       api
-        .get('/ticket/', {
+        .get('/ticket', {
           params: {
             status: statusFilter,
             q: searchValue || undefined,
@@ -59,6 +62,8 @@ export const AdminStatementsPage = () => {
         })
         .then((res) => res.data),
   });
+
+  console.log(data);
 
   const handleSort = (field: string, order: 'asc' | 'desc' | null) => {
     setSearchParams((prevParams) => {
@@ -86,14 +91,14 @@ export const AdminStatementsPage = () => {
   );
 
   const table = useReactTable({
-    data: data?.result?.result ?? [],
-    columns,
+    data: data?.result.state.heap ?? [],
+    columns: columns,
     pageCount: Math.ceil((data?.total ?? 0) / pageSize) || 1,
     state: {
       pagination,
     },
     autoResetPageIndex: false,
-    onPaginationChange: setPagination, // Просто обновляем локальный стейт без трогания URL
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
   });

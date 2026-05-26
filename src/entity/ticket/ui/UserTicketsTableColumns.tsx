@@ -71,9 +71,7 @@ export const UserTicketsTableColumns = (): ColumnDef<Ticket>[] => {
             {status === 'Виконано' && (
               <span className="text-green-700 font-semibold">Виконано</span>
             )}
-            {status === 'REJECT' && (
-              <span className="text-red-500 font-semibold">Відхилено</span>
-            )}
+            {status === 'REJECT' && <span className="text-red-500 font-semibold">Відхилено</span>}
             {status === 'PENDING' && (
               <span className="text-yellow-600 font-semibold">В обробці</span>
             )}

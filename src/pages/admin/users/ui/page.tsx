@@ -18,6 +18,14 @@ import { UserTableColumns, type User } from '@/entity/user';
 import { useAuth } from '@/core/auth';
 import { EditUserDialog } from '@/features/edit-user';
 
+interface ApiResponse {
+  __type: string;
+  size: number;
+  state: {
+    heap: User[];
+  };
+}
+
 export const AllUsersPage = () => {
   const {
     value: { user },
@@ -29,14 +37,15 @@ export const AllUsersPage = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  // Стейт зберігає об'єкт користувача, якого ми зараз редагуємо
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
-  const { data = [], refetch: refetchUsers } = useQuery<User[]>({
+  const { data, refetch: refetchUsers } = useQuery<ApiResponse>({
     queryKey: ['users'],
     refetchOnWindowFocus: false,
     queryFn: () => api.get('/user').then((res) => res.data),
   });
+
+  console.log(data);
 
   const columns = useMemo(
     () =>
@@ -49,7 +58,7 @@ export const AllUsersPage = () => {
   );
 
   const table = useReactTable({
-    data,
+    data: data?.state.heap ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -139,7 +148,6 @@ export const AllUsersPage = () => {
         </div>
       </div>
 
-      {/* Один діалог на всю сторінку, що лежить окремо від дерева таблиці */}
       <EditUserDialog
         targetUser={editingUser}
         onClose={() => setEditingUser(null)}

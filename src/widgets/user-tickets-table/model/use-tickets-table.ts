@@ -12,6 +12,19 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
+interface ApiResponse {
+  result: {
+    __type: string;
+    size: number;
+    state: {
+      heap: Ticket[];
+    };
+  };
+  total: number;
+  page: number;
+  lastPage: number;
+}
+
 export const useTicketsTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -21,19 +34,19 @@ export const useTicketsTable = () => {
 
   const columns = useMemo(() => UserTicketsTableColumns(), []);
 
-  const { data } = useQuery<{ data: Ticket[]; total: number }>({
+  const { data } = useQuery<ApiResponse>({
     queryKey: ['user-tickets', pagination.pageIndex, pagination.pageSize],
     refetchOnWindowFocus: false,
     queryFn: async () =>
       await api
-        .get(`/ticket?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`)
+        .get(`/ticket/my?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`)
         .then((res) => res.data),
   });
 
   console.log(data);
 
   const table = useReactTable({
-    data: data?.result.result ?? [],
+    data: data?.result.state.heap ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

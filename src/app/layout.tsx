@@ -163,12 +163,9 @@ export const RootLayout = () => {
           </main>
         </Suspense>
 
-        {!isAuthRoute && (
-          <footer className="container mx-auto px-1 py-2 text-center text-sm font-semibold border-t-0 opacity-0 select-none pointer-events-none h-0 p-0 overflow-hidden">
-            Тема 18: Структура даних та алгоритм під час підтримки работы сервісного центру МВС.
-            Порівняння алгоритмів сортування з heapsort як базовим
-          </footer>
-        )}
+        {/*<footer className="container mx-auto px-1 py-2 text-center text-sm font-semibold border-t-0 opacity-0 select-none pointer-events-none h-0 p-0 overflow-hidden">
+       
+        </footer>*/}
       </SidebarInset>
     </SidebarProvider>
   );
