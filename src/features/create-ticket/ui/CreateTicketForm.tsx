@@ -1,8 +1,12 @@
+import type { Car } from '@/entity/car';
+import { TICKET_TYPES } from '@/entity/ticket';
+import { api } from '@/shared/api';
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
+  CardTitle,
   Field,
   FieldContent,
   FieldGroup,
@@ -15,24 +19,61 @@ import {
   SelectTrigger,
   SelectValue,
   Spinner,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  Textarea,
 } from '@/shared/ui';
-import { CircleQuestionMark } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useCreateTicket } from '../model/use-create-ticket';
-import { TICKET_TYPES } from '@/entity/ticket';
+
+interface ApiResponse {
+  __type: string;
+  size: number;
+  state: {
+    heap: Car[];
+  };
+  total: number;
+  page: number;
+  lastPage: number;
+}
 
 export const CreateTicketForm = () => {
-  const { createTicketMutation, selectedType, setSelectedType, VIN, setVIN, userInfo, isPending } =
-    useCreateTicket();
+  const {
+    createTicketMutation,
+    selectedType,
+    setTicket,
+    ticket,
+    setSelectedType,
+    handleChange,
+    isDisabled,
+    userInfo,
+    selectedCarId,
+    setSelectedCarId,
+    isPending,
+  } = useCreateTicket();
+
+  const { data, isLoading } = useQuery<ApiResponse>({
+    queryKey: ['cars'],
+    refetchOnWindowFocus: false,
+    queryFn: () => api.get('/car').then((res) => res.data),
+  });
+
+  const selectedCar = data?.state.heap.find((car) => car.id === selectedCarId) || null;
+
+  useEffect(() => {
+    setTicket((p) => ({
+      ...p,
+      VIN: selectedCar?.vin ?? '',
+      carNumber: selectedCar?.plateNumber ?? '',
+    }));
+  }, [selectedCar]);
 
   return (
     <Card className="w-150 p-2">
-      <CardHeader>
-        <h1 className="text-xl font-bold">Подача заяви</h1>
+      <CardHeader className="px-2 ">
+        <CardTitle className="text-xl">Нова заявка</CardTitle>
       </CardHeader>
-      <CardContent>
+
+      <CardContent className="px-2">
         <form className="flex flex-col gap-4">
           <FieldSet>
             <FieldGroup>
@@ -50,6 +91,7 @@ export const CreateTicketForm = () => {
                     />
                   </FieldContent>
                 </Field>
+
                 <Field>
                   <FieldLabel htmlFor="lastName">Прізвище</FieldLabel>
                   <FieldContent>
@@ -97,33 +139,85 @@ export const CreateTicketForm = () => {
             </Select>
           </Field>
 
-          <Field>
-            <FieldLabel htmlFor="vin" className="flex gap-1 items-center">
-              VIN-номер
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <CircleQuestionMark size={15} />
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  17-значний код (наприклад, VF33H9HZC12345678). Вказаний у техпаспорті.
-                </TooltipContent>
-              </Tooltip>
-            </FieldLabel>
-            <FieldContent>
-              <Input
-                id="vin"
-                value={VIN}
-                onChange={(e) => setVIN(e.target.value)}
-                placeholder="VIN-номер"
-                type="text"
-                name="vin"
-              />
-            </FieldContent>
-          </Field>
+          {selectedType && (
+            <Field>
+              <FieldLabel>Автомобіль</FieldLabel>
+              <Select value={selectedCarId} onValueChange={setSelectedCarId} disabled={isLoading}>
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={isLoading ? 'Завантаження авто...' : 'Оберіть автомобіль'}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {data?.state.heap.map((car) => (
+                    <SelectItem key={car.id} value={car.id}>
+                      {car.brand} {car.modelName} ({car.plateNumber}) ({car.year})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+          )}
+
+          {selectedCar && (
+            <div className="flex flex-col gap-4 ">
+              <Field>
+                <FieldLabel htmlFor="car-vin">VIN</FieldLabel>
+                <FieldContent>
+                  <Input id="car-vin" value={ticket.VIN} disabled type="text" name="car-vin" />
+                </FieldContent>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="carNumber">Державний номер</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="carNumber"
+                    value={ticket.carNumber}
+                    disabled
+                    type="text"
+                    name="carNumber"
+                  />
+                </FieldContent>
+              </Field>
+
+              {selectedType === 'Заміна номерних знаків' && (
+                <Field>
+                  <FieldLabel htmlFor="new-car-number">Новий номер </FieldLabel>
+                  <FieldContent>
+                    <Input
+                      id="newCarNumber"
+                      onChange={(e) => handleChange(e)}
+                      value={ticket.newCarNumber}
+                      maxLength={8}
+                      type="text"
+                      name="newCarNumber"
+                    />
+                  </FieldContent>
+                </Field>
+              )}
+
+              {selectedType === 'Зняття автомобіля з обліку' && (
+                <Field>
+                  <FieldLabel htmlFor="reason">Причина </FieldLabel>
+                  <FieldContent>
+                    <Textarea
+                      id="reason"
+                      className="h-40 resize-none"
+                      onChange={(e) => handleChange(e)}
+                      value={ticket.reason}
+                      maxLength={460}
+                      name="reason"
+                    />
+                  </FieldContent>
+                </Field>
+              )}
+            </div>
+          )}
 
           <Button
-            type="submit"
-            disabled={isPending}
+            type="button"
+            disabled={isPending || isDisabled || !selectedCar}
             className="mt-2"
             onClick={() => createTicketMutation.mutate()}
           >
@@ -133,7 +227,7 @@ export const CreateTicketForm = () => {
                 Створити заяву
               </span>
             ) : (
-              'Створити заяву'
+              `Подати  заяву: ${selectedType}`
             )}
           </Button>
         </form>

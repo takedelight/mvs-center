@@ -2,7 +2,7 @@ import { useAuth } from '@/core/auth';
 import { api } from '@/shared/api';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { useState, useEffect } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { toast } from 'react-toastify';
 
 export const useCreateTicket = () => {
@@ -11,7 +11,15 @@ export const useCreateTicket = () => {
   } = useAuth();
 
   const [selectedType, setSelectedType] = useState('');
-  const [VIN, setVIN] = useState('');
+  const [selectedCarId, setSelectedCarId] = useState<string>('');
+
+  const [ticket, setTicket] = useState({
+    VIN: '',
+    type: '',
+    carNumber: '',
+    newCarNumber: '',
+    reason: '',
+  });
 
   const [userInfo, setUserInfo] = useState({
     firstName: '',
@@ -27,6 +35,15 @@ export const useCreateTicket = () => {
     });
   }, [user]);
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    setTicket((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const createTicketMutation = useMutation({
     mutationKey: ['create-ticket'],
     mutationFn: async () => {
@@ -35,19 +52,23 @@ export const useCreateTicket = () => {
         return;
       }
 
-      if (!VIN) {
+      if (!ticket.VIN) {
         toast.error('Введіть VIN');
         return;
       }
 
-      if (VIN.trim().length < 17) {
+      if (ticket.VIN.trim().length < 17) {
         toast.error('VIN повинен містити не менше 17 символів');
         return;
       }
 
       const data = {
         type: selectedType,
-        VIN,
+        VIN: ticket.VIN,
+        carNumber: ticket.carNumber,
+        newCarNumber: ticket.newCarNumber,
+        reason: ticket.reason,
+        carId: selectedCarId,
       };
 
       await api.post('/ticket', data);
@@ -67,14 +88,24 @@ export const useCreateTicket = () => {
   });
 
   const isPending = !selectedType || createTicketMutation.isPending;
+  const isDisabled =
+    selectedType === 'Заміна номерних знаків'
+      ? !ticket.newCarNumber || ticket.newCarNumber.trim().length < 8
+      : selectedType === 'Зняття автомобіля з обліку'
+        ? !ticket.reason
+        : false;
 
   return {
     createTicketMutation,
     selectedType,
     setSelectedType,
-    VIN,
-    setVIN,
+    selectedCarId,
+    setSelectedCarId,
+    ticket,
+    setTicket,
     isPending,
+    isDisabled,
+    handleChange,
     userInfo,
     setUserInfo,
   };
